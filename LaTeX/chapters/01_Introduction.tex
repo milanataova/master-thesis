@@ -1,0 +1,20 @@
+% Chapter 1: Introduction
+
+\chapter{Introduction}
+\label{ch:introduction}
+
+Large-scale surveys remain the gold standard for understanding subjective well-being across populations, yet they come with substantial costs. The World Values Survey, for instance, requires years of coordination across dozens of countries and significant financial resources \parencite{haerpfer2022wvs}. These constraints limit researchers' ability to study specific populations, pilot-test survey instruments, or augment existing datasets. Large language models (LLMs) offer a potential alternative: generating synthetic survey responses that approximate human response patterns without the overhead of traditional data collection \parencite{anthis2025position}.
+
+The measurement of life satisfaction presents a particularly interesting test case. Multiple established instruments, including single-item direct assessments, metaphorical scales like the Cantril Ladder \parencite{cantril1966pattern}, and multi-item inventories such as the Satisfaction with Life Scale \parencite{diener1985swls} and Oxford Happiness Questionnaire \parencite{hills2002ohq}, all purport to measure the same underlying construct, yet they differ substantially in their format, cognitive demands, and response patterns. LLM outputs are strongly affected by prompt perturbations \parencite{tjuatja2024llms}, but unlike human respondents, LLMs can be prompted with many different scales without fatigue effects. This creates an opportunity to systematically compare how different measurement approaches perform in silicon sampling.
+
+In this thesis, I investigate whether LLMs can generate synthetic survey responses that approximate real human life satisfaction distributions from the World Values Survey Wave 7. The evaluation is structured around three research questions:
+
+\begin{description}
+    \item[RQ1:] To what extent can LLMs approximate human responses in life satisfaction surveys?
+    \item[RQ2:] Are certain types of life satisfaction scales better approximated by LLMs than others?
+    \item[RQ3:] Can alignment with human survey responses be improved by combining results across multiple scales?
+\end{description}
+
+To address these questions, this thesis employs a systematic methodological framework in which multiple LLMs generate responses to different life satisfaction questionnaires across diverse countries and demographic segments. Distributional alignment is quantified using Wasserstein distance, with variance decomposition identifying which factors most influence approximation quality. The contributions are twofold: \textit{methodologically}, this work demonstrates that combining results from multiple scales can improve alignment with human response distributions; \textit{empirically}, it provides systematic evidence revealing that the choice of a response scale and respondent health status are the primary determinants of approximation quality, that smaller models can outperform larger ones, and that ensemble approaches substantially improve alignment.
+
+The remainder of this thesis is organized as follows. Chapter~\ref{ch:background} provides background on life satisfaction measurement and LLM capabilities. Chapter~\ref{ch:related-work} reviews prior work on synthetic survey data generation. Chapter~\ref{ch:method} details the methodology, including data sources, life satisfaction scales, and analytical approaches. Chapter~\ref{ch:results} presents the empirical findings. Chapter~\ref{ch:limitations} discusses limitations, and Chapter~\ref{ch:conclusion} concludes with implications and directions for future research.

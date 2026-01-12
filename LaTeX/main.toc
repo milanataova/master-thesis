@@ -1,0 +1,87 @@
+\babel@toc {english}{}\relax 
+\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.2}%
+\contentsline {chapter}{\numberline {2}Background}{3}{chapter.3}%
+\contentsline {section}{\numberline {2.1}Life Satisfaction Measurement}{3}{section.4}%
+\contentsline {subsection}{\numberline {2.1.1}Defining Life Satisfaction}{3}{subsection.5}%
+\contentsline {subsection}{\numberline {2.1.2}Why Life Satisfaction Matters}{4}{subsection.6}%
+\contentsline {subsection}{\numberline {2.1.3}Measurement Approaches}{4}{subsection.7}%
+\contentsline {subsection}{\numberline {2.1.4}Measurement Challenges}{5}{subsection.8}%
+\contentsline {section}{\numberline {2.2}Large Language Models as Survey Respondents}{6}{section.9}%
+\contentsline {subsection}{\numberline {2.2.1}Overview of Large Language Models}{6}{subsection.10}%
+\contentsline {subsection}{\numberline {2.2.2}The Silicon Sampling Paradigm}{6}{subsection.11}%
+\contentsline {section}{\numberline {2.3}The Promise and Challenge of Synthetic Survey Data}{7}{section.12}%
+\contentsline {subsection}{\numberline {2.3.1}Why Synthetic Survey Data?}{7}{subsection.13}%
+\contentsline {subsection}{\numberline {2.3.2}Challenges for Synthetic Survey Data}{7}{subsection.14}%
+\contentsline {chapter}{\numberline {3}Related Work}{9}{chapter.15}%
+\contentsline {section}{\numberline {3.1}LLMs as Synthetic Survey Respondents}{9}{section.16}%
+\contentsline {section}{\numberline {3.2}Questionnaire Design Effects in LLM Responses}{11}{section.17}%
+\contentsline {section}{\numberline {3.3}Demographic Conditioning and Persona Prompting}{12}{section.18}%
+\contentsline {chapter}{\numberline {4}Method}{15}{chapter.19}%
+\contentsline {section}{\numberline {4.1}Overview of Analytical Approach}{15}{section.20}%
+\contentsline {subsection}{\numberline {4.1.1}Research Questions}{15}{subsection.21}%
+\contentsline {subsection}{\numberline {4.1.2}Methodology Pipeline}{15}{subsection.22}%
+\contentsline {section}{\numberline {4.2}Data Sources and Preparation}{16}{section.24}%
+\contentsline {subsection}{\numberline {4.2.1}World Values Survey Wave 7}{16}{subsection.25}%
+\contentsline {subsubsection}{\nonumberline Country Selection}{17}{subsubsection*.27}%
+\contentsline {subsubsection}{\nonumberline Life Satisfaction Measurement}{18}{subsubsection*.30}%
+\contentsline {subsubsection}{\nonumberline Demographic Variables}{18}{subsubsection*.32}%
+\contentsline {subsubsection}{\nonumberline Survey Weights}{19}{subsubsection*.35}%
+\contentsline {section}{\numberline {4.3}Life Satisfaction Scales}{19}{section.36}%
+\contentsline {subsubsection}{\nonumberline Original WVS: Standard WVS Question}{19}{subsubsection*.38}%
+\contentsline {subsubsection}{\nonumberline Cantril Ladder Scale}{19}{subsubsection*.40}%
+\contentsline {subsubsection}{\nonumberline Reverse Scale}{19}{subsubsection*.42}%
+\contentsline {subsubsection}{\nonumberline SWLS: Satisfaction with Life Scale}{20}{subsubsection*.44}%
+\contentsline {subsubsection}{\nonumberline OHQ: Oxford Happiness Questionnaire}{20}{subsubsection*.51}%
+\contentsline {subsection}{\numberline {4.3.1}Large Language Models}{22}{subsection.82}%
+\contentsline {subsection}{\numberline {4.3.2}Synthetic Data Generation Process}{22}{subsection.83}%
+\contentsline {subsubsection}{\nonumberline Prompting Strategy}{22}{subsubsection*.85}%
+\contentsline {subsubsection}{\nonumberline Alternative Approaches Not Pursued}{24}{subsubsection*.87}%
+\contentsline {subsubsection}{\nonumberline Generation Parameters}{24}{subsubsection*.89}%
+\contentsline {subsubsection}{\nonumberline Weighting Procedure}{25}{subsubsection*.92}%
+\contentsline {subsection}{\numberline {4.3.3}Equipercentile Equating}{25}{subsection.93}%
+\contentsline {subsubsection}{\nonumberline Procedure}{26}{subsubsection*.95}%
+\contentsline {subsubsection}{\nonumberline Implementation and Validation}{26}{subsubsection*.99}%
+\contentsline {subsection}{\numberline {4.3.4}Demographic Segmentation}{27}{subsection.100}%
+\contentsline {subsubsection}{\nonumberline Cross-Classification Structure}{27}{subsubsection*.102}%
+\contentsline {subsubsection}{\nonumberline Sample Structure Summary}{27}{subsubsection*.104}%
+\contentsline {section}{\numberline {4.4}Distributional Distance Metrics}{28}{section.106}%
+\contentsline {subsection}{\numberline {4.4.1}Wasserstein Distance}{28}{subsection.107}%
+\contentsline {subsection}{\numberline {4.4.2}Kolmogorov-Smirnov Statistic}{29}{subsection.110}%
+\contentsline {section}{\numberline {4.5}Variance Decomposition Analysis}{29}{section.112}%
+\contentsline {subsection}{\numberline {4.5.1}Rationale and Purpose}{29}{subsection.113}%
+\contentsline {subsection}{\numberline {4.5.2}Method: Between-Group Variance Ratio}{30}{subsection.114}%
+\contentsline {subsubsection}{\nonumberline Mathematical Justification}{30}{subsubsection*.120}%
+\contentsline {section}{\numberline {4.6}Score-Level Analysis}{31}{section.122}%
+\contentsline {section}{\numberline {4.7}Ensemble Approaches}{32}{section.124}%
+\contentsline {subsection}{\numberline {4.7.1}Rationale for Ensemble Methods}{32}{subsection.125}%
+\contentsline {subsection}{\numberline {4.7.2}KS-Based Optimal Weighting}{32}{subsection.126}%
+\contentsline {subsubsection}{\nonumberline Weight Calculation}{33}{subsubsection*.128}%
+\contentsline {subsubsection}{\nonumberline Ensemble Distribution Construction}{33}{subsubsection*.131}%
+\contentsline {subsection}{\numberline {4.7.3}Equal-Weight Averaging}{33}{subsection.133}%
+\contentsline {section}{\numberline {4.8}Software and Implementation}{34}{section.135}%
+\contentsline {chapter}{\numberline {5}Results}{35}{chapter.136}%
+\contentsline {section}{\numberline {5.1}Overview of Results}{35}{section.137}%
+\contentsline {section}{\numberline {5.2}Country-Level Evaluation}{35}{section.138}%
+\contentsline {subsection}{\numberline {5.2.1}Distributional Comparisons}{37}{subsection.142}%
+\contentsline {section}{\numberline {5.3}Subgroup Analysis}{42}{section.154}%
+\contentsline {subsection}{\numberline {5.3.1}Variance Decomposition}{42}{subsection.156}%
+\contentsline {subsection}{\numberline {5.3.2}Demographic Effects}{44}{subsection.159}%
+\contentsline {subsection}{\numberline {5.3.3}Model and Questionnaire Effects}{45}{subsection.162}%
+\contentsline {subsection}{\numberline {5.3.4}Score-Level Accuracy}{46}{subsection.165}%
+\contentsline {subsubsection}{\nonumberline Prediction Bias Direction}{46}{subsubsection*.168}%
+\contentsline {subsubsection}{\nonumberline Variation by Questionnaire Type}{47}{subsubsection*.171}%
+\contentsline {section}{\numberline {5.4}Ensemble Approaches}{48}{section.173}%
+\contentsline {subsection}{\numberline {5.4.1}Ensemble Construction}{48}{subsection.174}%
+\contentsline {subsection}{\numberline {5.4.2}Ensemble Performance}{48}{subsection.175}%
+\contentsline {subsection}{\numberline {5.4.3}Practical Implications for RQ3}{50}{subsection.184}%
+\contentsline {section}{\numberline {5.5}Summary of Findings}{52}{section.185}%
+\contentsline {chapter}{\numberline {6}Limitations}{55}{chapter.187}%
+\contentsline {chapter}{\numberline {7}Conclusion}{57}{chapter.188}%
+\contentsline {chapter}{\nonumberline Bibliography}{59}{chapter*.189}%
+\contentsline {chapter}{\numberline {A}Supplementary Results}{65}{appendix.190}%
+\contentsline {section}{\numberline {A.1}Kolmogorov-Smirnov Statistics}{65}{section.191}%
+\contentsline {section}{\numberline {A.2}Supplementary Figures}{66}{section.194}%
+\contentsline {section}{\numberline {A.3}Score-Level Analysis by Questionnaire Type}{66}{section.197}%
+\contentsline {chapter}{\numberline {B}Use of Generative AI Tools}{69}{appendix.199}%
+\contentsline {chapter}{\numberline {C}Declaration}{71}{appendix.200}%
+\providecommand \tocbasic@end@toc@file {}\tocbasic@end@toc@file 

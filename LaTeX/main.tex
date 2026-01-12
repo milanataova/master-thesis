@@ -1,0 +1,77 @@
+%%%%%%% Document settings %%%%%%%%%%
+\documentclass{DESSThesis}
+
+%%%%%%%%%%% Additional Packages %%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{csquotes}
+\usepackage{microtype}
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=black
+}
+
+\usepackage{booktabs}      % Professional quality tables
+\usepackage{multirow}      % Tables with merged rows
+\usepackage{longtable}     % Tables spanning multiple pages
+
+%%%%%%%%%%% Personalized commands and definitions %%%%%%%%%
+% Add custom commands if needed
+
+% Table of contents depth: 1 = sections only (no subsections)
+\setcounter{tocdepth}{1}
+
+%%%%%%%%%%%%%%%%%%%%%% Hyphenations %%%%%%%%%%%%%%
+\hyphenation{trac-ta-ble}
+\hyphenation{Was-ser-stein}
+\hyphenation{Kol-mo-go-rov-Smir-nov}
+\hyphenation{syn-the-tic}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\graphicspath{{img/}{figures/}}
+\addbibresource{references/references.bib}
+
+\begin{document}
+
+%%%%%%%%%%%%%%%%%%%%% Frontpage %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\def \TypeofThesis{Master's Thesis}
+\def \TitleofThesis{Comparing Life Satisfaction Scales for Synthetic Respondents: A Large Language Model Approach}
+\def \AuthorofThesis{Milana Taova}
+\def \Supervisor{Prof.\ Dr.\ Markus Strohmaier}
+\def \Advisor{Georg Ahnert}
+
+\input{frontpage}
+
+%%%%%%%%%%%%%%%%%%%%% Abstract %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\cleardoublepage
+
+\thispagestyle{plain}
+\begin{abstract}
+Large Language Models (LLMs) have been proposed as ``silicon samples'' capable of generating synthetic survey responses. With many measurement instruments available for constructs such as life satisfaction, it remains unclear whether some yield better results in silicon sampling than others. I investigate to what extent LLMs can approximate human life satisfaction distributions from the World Values Survey (WVS) Wave 7, how questionnaire design affects approximation quality, and whether ensemble approaches can improve alignment. I used three LLMs (LLaMA 3.1 8B, LLaMA 3.3 70B, Qwen 2.5 72B) to generate synthetic responses across five scales for demographically-segmented populations in four countries.
+
+Results reveal moderate approximation quality overall, with substantial variation across conditions. Questionnaire design significantly affects performance: the Original WVS and Satisfaction with Life Scale yield the best approximations, while the Reverse Scale performs considerably worse. Contrary to expectations, the smaller model outperforms larger ones. Variance decomposition shows that health status and model choice are the strongest predictors of approximation quality, while income shows no significant effect. Ensemble approaches combining predictions across questionnaires improve alignment by approximately 26\% over the best individual scale. These findings provide guidance for researchers considering LLM-generated survey data and contribute simulated evidence to the jingle-jangle problem in psychological measurement.
+\end{abstract}
+\cleardoublepage
+
+%%%%%%%%%%%%%%%%%%%%% Chapters %%%%%%%%%%%%%%%%%%%%%%
+
+\pagenumbering{arabic}  % Switch to Arabic numerals for main content
+
+\include{chapters/01_Introduction}
+\include{chapters/02_Background}
+\include{chapters/03_Related_work}
+\include{chapters/04_Method}
+\include{chapters/05_Results}
+\include{chapters/06_Limitations}
+\include{chapters/07_Conclusion}
+
+\cleardoublepage
+\printbibliography[heading=bibintoc]
+
+\include{chapters/Appendix}
+
+\include{chapters/Declaration}
+
+\end{document}

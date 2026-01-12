@@ -1,0 +1,102 @@
+% Appendix
+% This appendix contains supplementary figures and tables
+
+\appendix
+
+\chapter{Supplementary Results}
+\label{app:supplementary}
+
+\section{Kolmogorov-Smirnov Statistics}
+\label{app:ks-results}
+
+This section presents Kolmogorov-Smirnov (KS) statistics as a complementary measure to the Wasserstein distances reported in the main text. While Wasserstein distance captures the total amount of probability mass movement required to transform one distribution into another, the KS statistic measures the maximum vertical distance between cumulative distribution functions. Both metrics are reported throughout this thesis to provide a comprehensive assessment of distributional alignment.
+
+Figure~\ref{fig:ks-by-country} presents KS statistics for all model-questionnaire combinations across the four countries. The patterns observed mirror those found with Wasserstein distance: REVERSE consistently shows the highest KS values, Original WVS and SWLS achieve the best performance, and LLaMA 3.1 8B generally outperforms larger models.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_ks_by_country.png}
+    \caption{Kolmogorov-Smirnov statistic by model and questionnaire across countries. Each panel represents one country, with models grouped on the x-axis and questionnaire types distinguished by color. Lower bars indicate better approximation. The KS statistic measures the maximum vertical distance between the cumulative distribution functions of real and synthetic data.}
+    \label{fig:ks-by-country}
+\end{figure}
+
+Table~\ref{tab:ks-summary} provides summary statistics for KS values across all 60 country-level comparisons.
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of Kolmogorov-Smirnov statistics across all country-level comparisons}
+\label{tab:ks-summary}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Grouping} & \textbf{Category} & \textbf{Mean KS} & \textbf{SD} & \textbf{Range} \\
+\hline
+\multirow{3}{*}{By Model}
+    & LLaMA 3.1 8B & 0.39 & 0.12 & 0.18--0.62 \\
+    & LLaMA 3.3 70B & 0.40 & 0.14 & 0.19--0.68 \\
+    & Qwen 2.5 72B & 0.46 & 0.13 & 0.24--0.71 \\
+\hline
+\multirow{5}{*}{By Questionnaire}
+    & Original WVS & 0.36 & 0.11 & 0.18--0.54 \\
+    & SWLS & 0.34 & 0.09 & 0.21--0.52 \\
+    & CANTRIL & 0.39 & 0.11 & 0.22--0.58 \\
+    & OHQ & 0.45 & 0.10 & 0.28--0.63 \\
+    & REVERSE & 0.53 & 0.12 & 0.32--0.71 \\
+\hline
+\multirow{4}{*}{By Country}
+    & Netherlands & 0.38 & 0.14 & 0.18--0.68 \\
+    & USA & 0.40 & 0.11 & 0.22--0.59 \\
+    & Indonesia & 0.40 & 0.12 & 0.21--0.62 \\
+    & Mexico & 0.47 & 0.13 & 0.24--0.71 \\
+\hline
+\end{tabular}
+\end{table}
+
+The KS statistics confirm the main findings: (1) the smallest model (LLaMA 3.1 8B) achieves the best average KS statistic; (2) SWLS and Original WVS show the best questionnaire performance; (3) REVERSE shows substantially worse performance than other questionnaires; and (4) Mexico presents the greatest approximation challenge while the Netherlands shows the best alignment.
+
+\section{Supplementary Figures}
+\label{app:supplementary-figures}
+
+This section presents additional visualizations that complement the main results.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig4_health_impact.pdf}
+    \caption{Approximation quality by health status across countries. Each panel shows one country, with questionnaire types on the x-axis and Wasserstein distance on the y-axis. Poor health populations (darkest bars) consistently show the highest Wasserstein distances across all countries and most questionnaire types, demonstrating that the health effect is robust across geographic and measurement contexts.}
+    \label{fig:health-impact}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/ks_all_approaches.png}
+    \caption{Kolmogorov-Smirnov statistic comparison across all approaches including ensemble methods. Each panel shows one country, with models on the x-axis and questionnaire types distinguished by color. Ensemble (light gray) and Average (dark gray) approaches consistently achieve lower KS statistics than individual questionnaires, confirming the Wasserstein distance findings.}
+    \label{fig:ks-ensemble}
+\end{figure}
+
+\section{Score-Level Analysis by Questionnaire Type}
+\label{app:score-level-questionnaire}
+
+Table~\ref{tab:app-score-level-by-questionnaire} presents prediction accuracy broken down by questionnaire type at the individual score level.
+
+\begin{table}[htbp]
+\centering
+\caption{Score-level prediction accuracy by questionnaire type (mean absolute error)}
+\label{tab:app-score-level-by-questionnaire}
+\begin{tabular}{c|ccccc}
+\hline
+\textbf{Score} & \textbf{Original WVS} & \textbf{Cantril} & \textbf{Reverse} & \textbf{SWLS} & \textbf{OHQ} \\
+\hline
+1 & 0.015 & 0.015 & 0.042 & 0.015 & 0.015 \\
+2 & 0.070 & 0.070 & 0.068 & 0.011 & 0.011 \\
+3 & 0.060 & 0.080 & 0.042 & 0.020 & 0.020 \\
+4 & 0.138 & 0.095 & 0.032 & 0.031 & 0.031 \\
+5 & 0.058 & 0.098 & 0.060 & 0.179 & 0.075 \\
+6 & 0.048 & 0.123 & 0.106 & 0.096 & 0.168 \\
+7 & 0.106 & 0.102 & 0.137 & 0.125 & 0.115 \\
+8 & 0.153 & 0.098 & 0.198 & 0.082 & 0.075 \\
+9 & 0.102 & 0.135 & 0.108 & 0.126 & 0.271 \\
+10 & 0.205 & 0.205 & 0.203 & 0.197 & 0.162 \\
+\hline
+\end{tabular}
+\end{table}
+
+Multi-item scales (SWLS, OHQ) show better accuracy for low scores (1--4), likely because equipercentile equating distributes responses more evenly. Original WVS performs best for moderate scores (5--7). Score 10 remains poorly predicted across all questionnaires (errors 0.162--0.205), indicating that maximum satisfaction is fundamentally difficult for LLMs to generate at human-like frequencies regardless of measurement instrument.

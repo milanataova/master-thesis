@@ -1,0 +1,107 @@
+% Chapter 2: Background
+% This chapter provides foundational concepts for understanding life satisfaction measurement,
+% large language models as survey respondents, and the emerging paradigm of synthetic survey data
+
+\chapter{Background}
+\label{ch:background}
+
+This chapter establishes the conceptual foundations for the thesis. Section~\ref{sec:life-satisfaction-measurement} defines life satisfaction as a psychological construct, explains its importance for research and policy, and describes the principal measurement approaches. Section~\ref{sec:llms-survey-respondents} explains how large language models can be employed to simulate human survey responses. Section~\ref{sec:synthetic-data-promise-challenge} discusses the potential benefits and validity challenges of synthetic survey data, identifying the specific gaps this thesis addresses.
+
+%-----------------------------------------------------------
+\section{Life Satisfaction Measurement}
+\label{sec:life-satisfaction-measurement}
+
+\subsection{Defining Life Satisfaction}
+\label{subsec:defining-life-satisfaction}
+
+Life satisfaction refers to an individual's global cognitive evaluation of their life as a whole \parencite{diener1985swls}. Unlike momentary emotional states or domain-specific assessments, life satisfaction captures a reflective judgment: when people consider their lives in totality, how favorably do they evaluate them? This cognitive-evaluative component distinguishes life satisfaction from related concepts such as positive affect (feeling good) or eudaimonic well-being (finding meaning and purpose).
+
+The construct sits within the broader framework of subjective well-being, which encompasses both cognitive evaluations (life satisfaction) and affective experiences (positive and negative emotions). While these components are correlated, they represent distinct psychological phenomena. A person might report high life satisfaction despite experiencing frequent negative emotions, or vice versa. This thesis focuses specifically on the cognitive-evaluative component, life satisfaction, because it is the most commonly measured aspect of subjective well-being in large-scale cross-national surveys.
+
+Life satisfaction is inherently subjective: it reflects how individuals perceive and evaluate their own lives rather than external assessments of their circumstances. This subjectivity is both a strength and a limitation. It captures what objective indicators cannot (whether material conditions translate into lives people find worthwhile), but it also means that responses are shaped by expectations, social comparisons, cultural norms, and the specific way questions are framed.
+
+\subsection{Why Life Satisfaction Matters}
+\label{subsec:why-life-satisfaction}
+
+Life satisfaction has become a focal point for research and policy because traditional development indicators provide an incomplete picture of human welfare. Gross domestic product, life expectancy, and educational attainment describe material conditions but say little about whether those conditions translate into lives people experience as worthwhile. This limitation has driven growing interest in subjective well-being as a complement to traditional metrics \parencite{undp2022hdr}.
+
+The policy relevance of life satisfaction data is substantial. Governments increasingly incorporate well-being measures into national statistics and policy evaluation; the United Kingdom, for example, regularly tracks national well-being as part of official housing and social surveys \parencite{ukgov2025wellbeing}. Life satisfaction surveys inform policies ranging from urban planning to healthcare resource allocation.
+
+Cross-national surveys have documented patterns invisible to objective measurement. The World Values Survey, spanning dozens of countries over multiple decades, has revealed that wealth and well-being diverge substantially beyond a certain threshold; that health status shapes life evaluations more strongly than income in many contexts; and that cultural factors produce systematic response differences even under similar objective conditions \parencite{haerpfer2022wvs}. These insights depend entirely on asking people directly---there is no objective measurement that can substitute for self-report.
+
+\subsection{Measurement Approaches}
+\label{subsec:measurement-approaches}
+
+Life satisfaction can be measured through various approaches that differ in their format, cognitive demands, and theoretical assumptions. Understanding these differences is essential for interpreting response patterns and evaluating whether synthetic respondents can replicate them. Notably, measuring life satisfaction using scales with many items or multiple scales at once creates substantial effort for human participants and likely reduces data quality as respondents become less careful in their responses. This is a limitation that does not apply to LLMs, which can be administered any number of scales without fatigue effects.
+
+\textbf{Single-item direct assessment.} The most straightforward approach asks respondents to rate their life satisfaction on a numerical scale. The World Values Survey question---\textit{``All things considered, how satisfied are you with your life as a whole these days?''}---exemplifies this approach, using a 1--10 scale anchored by ``completely dissatisfied'' and ``completely satisfied.'' Single-item measures are economical and face-valid, though they sacrifice the reliability benefits of multiple items \parencite{wanous1997overall}.
+
+\textbf{Metaphorical framing.} The Cantril Self-Anchoring Scale \parencite{cantril1966pattern} presents life satisfaction through the metaphor of a ladder, with the top representing the best possible life and the bottom the worst. Respondents indicate which step represents their current standing. This approach may engage different cognitive processes than direct numerical rating, as respondents must first construct personal definitions of best and worst possible lives before locating themselves on the scale.
+
+\textbf{Multi-item inventories.} Instruments like the Satisfaction with Life Scale (SWLS) \parencite{diener1985swls} use multiple items to assess the construct. The five-item SWLS asks respondents to rate agreement with statements such as \textit{``In most ways my life is close to my ideal''} and \textit{``If I could live my life over, I would change almost nothing.''} Multiple items improve reliability through aggregation and can capture different facets of overall life evaluation.
+
+\textbf{Comprehensive well-being scales.} Broader instruments like the Oxford Happiness Questionnaire (OHQ) \parencite{hills2002ohq} assess life satisfaction alongside related constructs such as self-esteem, sense of purpose, and social relationships. The 29-item OHQ provides a more comprehensive assessment but requires substantially more respondent time and may conflate distinct aspects of well-being.
+
+These measurement approaches are not interchangeable. Empirical research has shown that different formats elicit systematically different response patterns in human respondents, even when ostensibly measuring the same construct \parencite{schwarz2001asking}. Whether a single-item WVS question and a multi-item SWLS capture equivalent information---or engage different cognitive processes that produce different results---remains an open question with implications for research comparability and data synthesis. This variation across instruments in human data makes life satisfaction measurement a useful test case for evaluating whether LLMs exhibit similar sensitivity to questionnaire format.
+
+\subsection{Measurement Challenges}
+\label{subsec:measurement-challenges}
+
+Several challenges complicate life satisfaction measurement. First, response patterns are sensitive to question wording, scale format, and context effects. The order in which questions appear, the specific anchors used, and even transient mood states can influence responses \parencite{schwarz1999self}.
+
+Second, cultural factors shape how people interpret and respond to satisfaction questions. Response styles vary across cultures: some populations show stronger tendencies toward extreme responses, while others cluster around scale midpoints \parencite{roberts2016response}. These patterns may reflect genuine differences in satisfaction levels, cultural norms about expressing satisfaction, or differential interpretation of scale points.
+
+Third, the field faces what \textcite{elson2023measures} describe as a proliferation problem: too many instruments measuring the same construct. With numerous scales available---each with proponents, validation studies, and accumulated research---selecting among them is difficult, and synthesizing findings across studies using different measures poses challenges. \textcite{wulff2025jinglejangle} frame this as the ``jingle-jangle'' problem, where instruments with the same label may measure different things (jingle fallacy) or instruments with different labels may measure the same thing (jangle fallacy).
+
+These challenges are not merely academic. They affect the validity of cross-national comparisons, the interpretation of trends over time, and the practical utility of life satisfaction data for policy decisions. They also raise questions about whether synthetic respondents, generated by language models trained on human text, can navigate these measurement complexities in ways that approximate human response patterns.
+
+%-----------------------------------------------------------
+\section{Large Language Models as Survey Respondents}
+\label{sec:llms-survey-respondents}
+
+\subsection{Overview of Large Language Models}
+\label{subsec:llm-overview}
+
+Large language models (LLMs) are neural network systems trained on extensive text corpora to predict and generate human-like text. Modern LLMs, built on transformer architectures with billions of parameters, have demonstrated remarkable capabilities in natural language understanding, reasoning, and generation \parencite{llama3herd2024, qwen25report2024}. These models learn statistical patterns from their training data---which includes books, articles, websites, and other text sources---enabling them to produce contextually appropriate responses to diverse prompts.
+
+The scale of contemporary LLMs is substantial. Models such as LLaMA 3.3 (70 billion parameters) and Qwen 2.5 (72 billion parameters) are commonly used open-weights language models \parencite{llama3herd2024, qwen25report2024}. This scale enables nuanced understanding of context, including the ability to adopt specified personas or respond from particular demographic perspectives when appropriately prompted.
+
+\subsection{The Silicon Sampling Paradigm}
+\label{subsec:silicon-sampling}
+
+\textcite{argyle2023silicon} introduced the concept of ``silicon sampling,'' using LLMs to generate synthetic survey responses that simulate human populations. The core insight is that LLMs, having been trained on vast amounts of human-generated text including survey responses, opinion pieces, and demographic-specific content, may have implicitly learned patterns of how different types of people respond to different types of questions.
+
+In the silicon sampling paradigm, researchers provide LLMs with demographic information and then pose survey questions. The model generates responses that, ideally, reflect how a person with those characteristics might actually respond. If LLMs can accurately capture these demographic-response patterns, they could generate synthetic survey samples at a fraction of the cost and time required for traditional data collection.
+
+This approach has generated both enthusiasm and skepticism. Proponents note that LLMs might capture response patterns that are difficult to model explicitly, potentially enabling rapid prototyping of survey instruments or supplementation of sparse demographic categories in existing datasets. Critics raise concerns about whether LLMs genuinely capture human response variation or merely reflect biases and stereotypes embedded in their training data \parencite{bisbee2024synthetic, gallegos2024bias}.
+
+%-----------------------------------------------------------
+\section{The Promise and Challenge of Synthetic Survey Data}
+\label{sec:synthetic-data-promise-challenge}
+
+\subsection{Why Synthetic Survey Data?}
+\label{subsec:why-synthetic}
+
+The appeal of LLM-generated survey data stems from a fundamental asymmetry: collecting real survey data is expensive and slow, while generating synthetic data is cheap and fast. Large cross-national surveys require years of coordination and substantial funding, whereas an LLM can generate thousands of responses in hours for minimal cost.
+
+This asymmetry creates several potential applications. Researchers could pilot-test survey instruments before investing in actual data collection, identifying problematic questions or unexpected response patterns early in the research process. Synthetic data could also augment sparse cells in existing datasets---the demographic combinations that surveys inevitably undersample due to practical constraints---or provide baseline distributions for power analyses and simulation studies. Additionally, synthetic responses might support rapid iteration on survey design, allowing researchers to test multiple question formulations without repeated data collection.
+
+Beyond cost savings, synthetic data offers accessibility benefits for researchers without large grants or institutional survey infrastructure, enabling preliminary investigations that would otherwise be infeasible. Studies of hard-to-reach populations might benefit from synthetic augmentation, and in contexts where privacy concerns limit data sharing, synthetic data could provide alternatives for secondary analysis.
+
+However, these potential benefits rest on a critical assumption: that synthetic responses approximate real ones closely enough for the intended purpose. This assumption requires empirical validation.
+
+\subsection{Challenges for Synthetic Survey Data}
+\label{subsec:synthetic-challenges}
+
+Several challenges complicate the use of LLM-generated survey data. The most fundamental concerns validity: do synthetic responses actually reflect how real people would respond? Most existing research has focused on whether LLMs can reproduce aggregate statistics---means, correlations, or regression coefficients---from real surveys \parencite{argyle2023silicon}. However, matching aggregate statistics does not guarantee that synthetic data faithfully represents the underlying population. For many research purposes, the full distribution of responses matters: not just average satisfaction levels, but how responses spread across the scale and whether the overall shape matches reality.
+
+Generalization across constructs presents another challenge. While \textcite{argyle2023silicon} demonstrated that LLMs can capture demographic differences in political attitudes, it remains unclear whether this extends to subjective well-being constructs like life satisfaction. Political attitudes may be more explicitly represented in LLM training data through news articles, opinion pieces, and social media, whereas life satisfaction involves personal evaluation that may be less directly captured in text corpora.
+
+The sensitivity to measurement format observed in human respondents also raises questions for synthetic data. If different questionnaire designs elicit different response patterns from humans, do LLMs show similar sensitivity? How approximation quality varies across scales---single-item questions, multi-item scales, metaphorical framings, or reversed scales---requires systematic investigation.
+
+Demographic representation in LLM training data may introduce additional biases. Models trained predominantly on English-language text from Western contexts may perform differently when simulating respondents from other cultural backgrounds, and whether LLMs can accurately capture cross-national variation in life satisfaction, or whether they default to patterns dominant in their training data, remains an open question.
+
+Finally, if individual approaches yield imperfect approximations, strategies for improvement are needed. Whether ensemble methods combining predictions from multiple questionnaires or models can improve alignment remains unexplored in the synthetic survey data literature.
+
+%-----------------------------------------------------------
+% End of Chapter 2

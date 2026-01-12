@@ -1,0 +1,571 @@
+% Chapter 4: Method
+% This chapter describes the data sources, generation procedures, and analytical methods used to evaluate synthetic survey data quality
+
+\chapter{Method}
+\label{ch:method}
+
+\section{Overview of Analytical Approach}
+\label{sec:method-overview}
+
+\subsection{Research Questions}
+\label{subsec:research-questions}
+
+This thesis evaluates the capacity of large language models (LLMs) to approximate human responses in life satisfaction surveys through a systematic comparison of synthetic and real-world survey data. The evaluation is structured around three research questions:
+
+\textbf{Research Question 1 (RQ1):} \textit{To what extent can large language models approximate human responses in life satisfaction surveys?}
+
+This foundational question examines whether LLM-generated responses exhibit distributional characteristics sufficiently similar to real human responses to be considered valid approximations, requiring quantitative metrics and empirically-grounded thresholds for approximation quality.
+
+\textbf{Research Question 2 (RQ2):} \textit{Are certain types of life satisfaction scales or questionnaire designs better approximated by LLMs than others?}
+
+This question investigates whether approximation quality varies systematically across different measurement instruments, including single-item assessments, metaphorical framings, and multi-item scales, with implications for optimal survey design in LLM-based simulation contexts.
+
+\textbf{Research Question 3 (RQ3):} \textit{Can alignment with human survey responses be improved by combining simulation results across multiple scales?}
+
+This question explores whether ensemble methods, combining predictions from multiple questionnaire variants, can yield superior approximations by reducing measurement error and capturing different facets of the underlying construct \cite{ghiselli1981measurement}.
+
+\subsection{Methodology Pipeline}
+\label{subsec:analytical-pipeline}
+
+Figure~\ref{fig:methodology-pipeline} provides an overview of the methodology pipeline. The approach proceeds through five main stages:
+
+\textbf{Real Survey Data.} World Values Survey Wave 7 provides the reference distributions of human life satisfaction responses. Four countries with non-normal distributions were selected to avoid spurious alignment (Section~\ref{sec:data-sources}).
+
+\textbf{Data Preparation.} Survey responses are stratified into 36 demographic segments based on country (4), income level (3), and health status (3). This segmentation enables both aggregate country-level comparisons and fine-grained subgroup analysis (Section~\ref{subsec:wvs-data}).
+
+\textbf{Prompt Design.} Each synthetic response is generated using a structured prompt combining three elements: a demographic persona describing the respondent's characteristics, a task instruction framing the survey context, and the questionnaire items themselves (Section~\ref{subsec:synthetic-data}).
+
+\textbf{Synthetic Data Generation.} Three large language models generate responses to five life satisfaction scales, producing 16,200 synthetic responses (30 responses per segment $\times$ 36 segments $\times$ 15 model-questionnaire combinations). Multi-item scale responses undergo equipercentile equating to enable comparison on a common 1--10 metric (Sections~\ref{subsec:synthetic-data} and \ref{subsec:equipercentile-equating}).
+
+\textbf{Distributional Comparison.} Synthetic and real distributions are compared using Wasserstein distance as the primary metric and Kolmogorov-Smirnov statistic as a secondary measure. These comparisons support three types of analysis: specification curve analysis across all analytical configurations, variance decomposition to quantify factor importance, and ensemble methods combining multiple scales (Section~\ref{sec:distance-metrics}).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_methodology_pipeline.png}
+    \caption{Overview of the methodology pipeline. World Values Survey data from four countries undergoes data preparation to create 36 demographic segments (4 countries $\times$ 3 income levels $\times$ 3 health statuses). Prompt design combines persona, task, and questionnaire elements. Synthetic data generation uses three LLMs and five life satisfaction scales to produce 16,200 responses. Distributional comparison evaluates alignment between real and synthetic data using Wasserstein distance and KS statistic.}
+    \label{fig:methodology-pipeline}
+\end{figure}
+
+%-----------------------------------------------------------
+\section{Data Sources and Preparation}
+\label{sec:data-sources}
+
+\subsection{World Values Survey Wave 7}
+\label{subsec:wvs-data}
+
+The real-world survey data for this study comes from the World Values Survey (WVS) Wave 7, a large-scale international social survey conducted between 2017 and 2022 across numerous countries \cite{haerpfer2022wvs}. The WVS employs nationally representative probability sampling with stratification and clustering to capture population-level attitudes, values, and beliefs.
+
+\subsubsection{Country Selection}
+
+This study focuses on four countries: the United States (USA), Indonesia (IDN), the Netherlands (NLD), and Mexico (MEX). Country selection was guided by three criteria. First, geographic diversity ensures representation across continents (Americas, Europe, and Asia), capturing distinct cultural contexts. Second, variation in economic development levels---as measured by GDP per capita and Human Development Index \cite{undp2022hdr, worldbank2023wdi}---provides heterogeneity in socioeconomic conditions that may influence life satisfaction patterns.
+
+Third, and most critically, countries were selected based on the distributional characteristics of their life satisfaction responses. The analysis deliberately focuses on countries exhibiting non-normal distributions---specifically, distributions that are skewed or multimodal rather than approximately Gaussian. This criterion is methodologically important because if both real and synthetic data follow normal distributions, good alignment could occur coincidentally due to the central limit theorem rather than reflecting meaningful approximation of human response patterns. By examining countries with more complex distributional shapes, the evaluation provides a more stringent test of LLM approximation quality.
+
+Figure~\ref{fig:country-selection} illustrates this selection criterion. South Korea exhibits an approximately normal distribution, whereas Armenia and Mexico show pronounced skewness. Countries with normal distributions like South Korea were excluded to avoid spurious alignment that could confound the assessment of approximation quality.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_country_selection_distributions.png}
+    \caption{Life satisfaction score distributions from World Values Survey Wave 7 for three countries examined during study design. Blue bars represent relative frequencies of responses on the 1--10 scale. South Korea exhibits an approximately normal distribution and was excluded from analysis. Armenia and Mexico show non-normal distributions---the types of skewed patterns sought for this study to avoid spurious alignment.}
+    \label{fig:country-selection}
+\end{figure}
+
+\subsubsection{Life Satisfaction Measurement}
+
+The primary outcome variable is life satisfaction, measured using WVS question Q49: \textit{``All things considered, how satisfied are you with your life as a whole these days?''} Respondents rate their satisfaction on a 10-point scale where 1 indicates ``completely dissatisfied'' and 10 indicates ``completely satisfied.'' This single-item measure provides a direct, face-valid assessment of overall life evaluation and serves as the reference distribution for all synthetic data comparisons.
+
+\subsubsection{Demographic Variables}
+
+Two demographic variables structure the subgroup analysis: income level and health status. These variables were selected based on Random Forest feature importance analysis, which identified them as the most predictive demographic factors for life satisfaction among available WVS variables, exceeding age, gender, education, marital status, and employment status.
+
+Income level is derived from WVS question Q288, which asks respondents to place their household income on a 10-point scale. Responses were recoded into three categories using within-country terciles: Low (scores 1--3), Medium (scores 4--7), and High (scores 8--10). Within-country categorization ensures that each income category represents a comparable position within the national income distribution rather than absolute purchasing power.
+
+Health status comes from question Q47, which asks respondents to rate their health on a five-point scale from very good to very poor. The original scale was collapsed into three levels to ensure adequate sample sizes: Good (very good + good), Fair, and Poor (poor + very poor). Figure~\ref{fig:feature-importance} displays the feature importance rankings. Further details on the segmentation structure are provided in Section~\ref{subsec:demographic-segments}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.8\textwidth]{figures/fig_feature_importance.png}
+    \caption{Random Forest feature importance for predicting life satisfaction. Country, health status, and income level emerge as the most important predictors among WVS variables, justifying their use as segmentation factors for the subgroup analysis.}
+    \label{fig:feature-importance}
+\end{figure}
+
+\subsubsection{Survey Weights}
+
+All distributional comparisons incorporate WVS sampling weights (variable \texttt{W\_WEIGHT}). These weights are essential for producing nationally representative estimates given the complex survey design involving stratification and clustering. Weighted analyses ensure that the real WVS distributions reflect population-level life satisfaction patterns rather than being biased by differential sampling probabilities. Correspondingly, synthetic data receive matching weights (described in Section~\ref{subsec:synthetic-data}) to align their demographic composition with real WVS distributions, enabling valid comparisons.
+
+%-----------------------------------------------------------
+\section{Life Satisfaction Scales}
+\label{sec:life-satisfaction-scales}
+
+Five questionnaire variants were employed to measure life satisfaction, each operationalizing the construct through different approaches. This diversity allows examination of whether certain measurement formats are more amenable to LLM approximation (RQ2). The questionnaires vary along multiple dimensions: number of items (single vs. multi-item), response scale format (direct numeric vs. metaphorical framing), and cognitive complexity (standard vs. reversed scales).
+
+\subsubsection{Original WVS: Standard WVS Question}
+
+The Original WVS questionnaire replicates the standard WVS life satisfaction question used in the real survey data \parencite{haerpfer2022wvs}. Respondents answer: \textit{``All things considered, how satisfied are you with your life as a whole these days?''} using a 10-point scale where 1 indicates completely dissatisfied and 10 indicates completely satisfied. This single-item direct assessment serves as the primary benchmark, as synthetic responses can be compared directly to real WVS responses without scale transformation.
+
+\subsubsection{Cantril Ladder Scale}
+
+The Cantril Ladder questionnaire employs the Cantril Self-Anchoring Scale framing \cite{cantril1966pattern}, which uses a metaphorical representation of life quality. Respondents are asked to imagine a ladder with steps numbered from 0 at the bottom to 10 at the top, where the top represents the best possible life and the bottom represents the worst possible life. They then indicate which step of the ladder best represents their current life. Responses on the 0-10 scale are recoded to 1-10 for consistency with other questionnaires. This approach tests whether metaphorical framing affects LLM response patterns differently than direct assessment.
+
+\subsubsection{Reverse Scale}
+
+The Reverse Scale questionnaire presents the same question as Original WVS but with an inverted response scale: 1 indicates completely satisfied and 10 indicates completely dissatisfied. This design tests whether LLMs can correctly process reversed scale orientations, a cognitive task that sometimes challenges human respondents \cite{suarez2018reversed}. The Reverse Scale was also included to test LLM robustness to prompt variations, as initial pilot testing revealed that LLMs were generating highly similar response distributions despite substantial changes in prompt wording. The reversed scale provided a more stringent test of whether LLMs could adapt their responses to fundamentally different question framings. All Reverse Scale responses are reverse-coded back to the standard direction (higher = more satisfied) prior to analysis, ensuring comparability with other questionnaires.
+
+\subsubsection{SWLS: Satisfaction with Life Scale}
+
+The SWLS consists of five items, each rated on a 7-point scale from 1 (strongly disagree) to 7 (strongly agree) \cite{diener1985swls}. The five items are:
+\begin{enumerate}
+    \item In most ways my life is close to my ideal.
+    \item The conditions of my life are excellent.
+    \item I am satisfied with my life.
+    \item So far I have gotten the important things I want in life.
+    \item If I could live my life over, I would change almost nothing.
+\end{enumerate}
+Responses are summed to produce a total score ranging from 5 to 35. This multi-item format provides potential reliability advantages over single-item measures and tests whether LLMs can maintain consistent persona characteristics across multiple related questions. Total scores are transformed to the 1-10 scale using equipercentile equating (Section~\ref{subsec:equipercentile-equating}).
+
+\subsubsection{OHQ: Oxford Happiness Questionnaire}
+
+The OHQ represents the most comprehensive instrument, comprising 29 items rated on a 6-point scale \cite{hills2002ohq}. The questionnaire assesses multiple facets of happiness and life satisfaction. The 29 items are:
+\begin{enumerate}
+    \item I don't feel particularly pleased with the way I am. (R)
+    \item I am intensely interested in other people.
+    \item I feel that life is very rewarding.
+    \item I have very warm feelings towards almost everyone.
+    \item I rarely wake up feeling rested. (R)
+    \item I am not particularly optimistic about the future. (R)
+    \item I find most things amusing.
+    \item I am always committed and involved.
+    \item Life is good.
+    \item I do not think that the world is a good place. (R)
+    \item I laugh a lot.
+    \item I am well satisfied with everything in my life.
+    \item I don't think I look attractive. (R)
+    \item There is a gap between what I would like to do and what I have done. (R)
+    \item I am very happy.
+    \item I find beauty in some things.
+    \item I always have a cheerful effect on others.
+    \item I can fit in (find time for) everything I want to.
+    \item I feel that I am not especially in control of my life. (R)
+    \item I feel able to take anything on.
+    \item I feel fully mentally alert.
+    \item I often experience joy and elation.
+    \item I don't find it easy to make decisions. (R)
+    \item I don't have a particular sense of meaning and purpose in my life. (R)
+    \item I feel I have a great deal of energy.
+    \item I usually have a good influence on events.
+    \item I don't have fun with other people. (R)
+    \item I don't feel particularly healthy. (R)
+    \item I don't have particularly happy memories of the past. (R)
+\end{enumerate}
+Items marked with (R) are reverse-scored (items 1, 5, 6, 10, 13, 14, 19, 23, 24, 27, 28, 29). Item responses are averaged to produce a score ranging from 1 to 6, which is then transformed to the 1-10 scale using equipercentile equating (Section~\ref{subsec:equipercentile-equating}). The OHQ's length and complexity test whether LLMs can handle extensive questionnaires requiring sustained attention and nuanced differentiation across many items.
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of questionnaire characteristics}
+\label{tab:questionnaire-summary}
+\begin{tabular}{lcccp{5cm}}
+\hline
+\textbf{Questionnaire} & \textbf{Items} & \textbf{Scale} & \textbf{Equating} & \textbf{Primary Purpose} \\
+\hline
+Original WVS & 1 & 1-10 direct & None & Standard WVS benchmark \\
+Cantril Ladder & 1 & 1-10 direct & None & Metaphorical framing \\
+Reverse Scale & 1 & 1-10 reversed & Reverse-code & Cognitive processing test \\
+SWLS & 5 & 1-7 each & Equipercentile & Multi-item reliability \\
+OHQ & 29 & 1-6 each & Equipercentile & Comprehensive assessment \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Large Language Models}
+\label{subsec:llm-models}
+
+Three large language model architectures were employed to generate synthetic survey responses, selected to provide diversity in model size and training approach. This variety enables examination of whether approximation quality varies systematically across different LLM architectures (RQ1).
+
+\textbf{LLaMA 3.1 8B.} This model from Meta AI contains 8 billion parameters and represents a smaller, more efficient architecture \cite{llama3herd2024}.
+
+\textbf{LLaMA 3.3 70B.} Also from Meta AI, this model scales to 70 billion parameters \cite{llama3herd2024}. The comparison between LLaMA 3.1 8B and LLaMA 3.3 70B isolates the effect of model scale within the same architectural family.
+
+\textbf{Qwen 2.5 72B.} Developed by Alibaba Cloud, this 72 billion parameter model provides architectural diversity beyond the LLaMA family \cite{qwen25report2024}. Qwen 2.5 was trained on a corpus with greater representation of Asian languages, which may be relevant for Indonesia.
+
+All three models are multilingual and were accessed via the Academic Cloud inference endpoint, which provides an OpenAI-compatible API. Models were queried with default temperature settings to balance response diversity with consistency. Rate limiting and computational considerations for the generation process are detailed in Section~\ref{subsec:synthetic-data}.
+
+\subsection{Synthetic Data Generation Process}
+\label{subsec:synthetic-data}
+
+\subsubsection{Prompting Strategy}
+
+Each synthetic response was generated using an interview-based prompting format where demographic characteristics are introduced through a simulated question-and-answer dialogue. This approach was selected based on recent empirical evidence demonstrating that interview-style prompting reduces stereotyping and improves alignment with human responses compared to alternative prompting formats such as direct role assignment or third-person descriptions \cite{lutz2025prompt}.
+
+The prompt structure follows an interview template that systematically establishes demographic context before presenting the target question:
+
+\begin{quote}
+\textit{You are an interviewee. Based on your previous answers, provide an answer to the last question.}
+
+\textit{Interviewer: Where do you live?}\\
+\textit{Interviewee: I live in [COUNTRY].}
+
+\textit{Interviewer: What is your income level?}\\
+\textit{Interviewee: My income level is [INCOME\_LEVEL].}
+
+\textit{Interviewer: All in all, how would you describe your state of health these days? Would you say it is good, fair, or poor?}\\
+\textit{Interviewee: My health is [HEALTH\_LEVEL].}
+
+\textit{Interviewer: [QUESTIONNAIRE TEXT]}\\
+\textit{Interviewee:}
+\end{quote}
+
+For example, a complete prompt for the United States with medium income and good health using the Original WVS questionnaire would read:
+
+\begin{quote}
+\textit{You are an interviewee. Based on your previous answers, provide an answer to the last question.}
+
+\textit{Interviewer: Where do you live?}\\
+\textit{Interviewee: I live in the United States.}
+
+\textit{Interviewer: What is your income level?}\\
+\textit{Interviewee: My income level is medium.}
+
+\textit{Interviewer: All in all, how would you describe your state of health these days? Would you say it is good, fair, or poor?}\\
+\textit{Interviewee: My health is good.}
+
+\textit{Interviewer: All things considered, how satisfied are you with your life as a whole these days? Please respond with a number from 1 to 10, where 10 = completely satisfied and 1 = completely dissatisfied. Reply with a single number from 1 to 10. Do not explain your answer.}\\
+\textit{Interviewee:}
+\end{quote}
+
+This prompting strategy incorporates several key design decisions justified by both methodological considerations and empirical testing during the thesis proposal preparation phase. First, demographic priming is limited to country, income level, and health status rather than including additional attributes such as gender, age, education, or occupation. This constraint reflects the feature importance analysis results (Section~\ref{subsec:demographic-segments}) and avoids over-specifying personas that might create unrealistic demographic profiles or introduce attributes not systematically measured in the WVS data.
+
+Second, the interview-based format was adopted after systematically comparing multiple prompting approaches during the proposal development stage. Alternative strategies tested included direct role assignment (\textit{``You are a person with...characteristics''}), third-person descriptions (\textit{``Consider a person who...''}), and structured attribute lists (\textit{``Person of income level X, health status Y...''}). The interview format demonstrated superior performance across two critical dimensions: (1) the LLMs produced meaningfully different response distributions for different demographic personas, demonstrating sensitivity to the specified characteristics, and (2) responses exhibited greater diversity within demographic groups while maintaining systematic differences between groups. In contrast, alternative prompting strategies yielded highly similar responses regardless of the demographic characteristics specified, suggesting that the models were not effectively incorporating the persona information into their response generation process.
+
+Third, the interview format aligns with recent findings by Lutz et al. (2025), who demonstrated that interview-style prompts reduce stereotyping, improve semantic diversity, and enhance alignment with human survey responses compared to direct or third-person role adoption formats \cite{lutz2025prompt}. Their systematic evaluation across multiple LLMs and demographic groups showed that interview prompts produce fewer marked words associated with demographic stereotypes and more varied responses within groups, both desirable properties for generating synthetic survey data intended to approximate human response patterns.
+
+Fourth, response format constraints (\textit{``Reply with a single number...Do not explain your answer''}) minimize extraneous text generation and ensure consistent parseable responses. This instruction is particularly important for larger models that may otherwise generate verbose explanations or caveats rather than direct numerical answers.
+
+\subsubsection{Alternative Approaches Not Pursued}
+
+Several alternative prompting strategies were considered but ultimately not implemented. Language-specific prompting, where prompts would be translated into each country's native language (e.g., Spanish for Mexico, Bahasa Indonesia for Indonesia), was rejected for two primary reasons. First, all three LLMs were trained predominantly on English text, with English representing a disproportionately large share of CommonCrawl training data compared to other languages \cite{li2024languageranker}. Recent empirical evidence across educational tasks demonstrates that LLM performance in English consistently exceeds performance in other languages, with average task performance gaps ranging from 5-15 percentage points depending on the language and model \cite{gupta2025multilingual}. Furthermore, using English prompts has been shown to yield equal or superior performance compared to prompts translated into the target language, even when the task content itself is in that language \cite{li2024languageranker}. Second, translation introduces an additional confounding variable that would make it difficult to isolate whether performance differences stem from the LLM's capabilities versus translation quality. The decision to use English prompts throughout therefore prioritizes isolating demographic effects rather than testing multilingual capabilities while leveraging the models' strongest language performance.
+
+
+\subsubsection{Generation Parameters}
+
+Table~\ref{tab:generation-parameters} summarizes the synthetic data generation structure. The generation process produced responses at multiple levels of aggregation, from individual demographic segments up to the complete dataset.
+
+\begin{table}[htbp]
+\centering
+\caption{Synthetic data generation structure}
+\label{tab:generation-parameters}
+\begin{tabular}{lrl}
+\hline
+\textbf{Level} & \textbf{Count} & \textbf{Calculation} \\
+\hline
+Responses per segment & 30 & Fixed sample size \\
+Segments per country & 9 & 3 income $\times$ 3 health \\
+Responses per country & 270 & 30 $\times$ 9 segments \\
+Countries & 4 & USA, Indonesia, Netherlands, Mexico \\
+Responses per model-questionnaire & 1,080 & 270 $\times$ 4 countries \\
+Models & 3 & LLaMA 3.1 8B, LLaMA 3.3 70B, Qwen 2.5 72B \\
+Questionnaires & 5 & Original WVS, Cantril, Reverse, SWLS, OHQ \\
+\textbf{Total synthetic responses} & \textbf{16,200} & 1,080 $\times$ 3 models $\times$ 5 questionnaires \\
+\hline
+\end{tabular}
+\end{table}
+
+All responses were validated to ensure numeric values within the valid range for each questionnaire. Invalid or missing responses triggered automatic regeneration, though such cases were rare.
+
+\subsubsection{Weighting Procedure}
+
+To enable valid distributional comparisons, each synthetic response was assigned a matching weight (\texttt{weight\_joint}) that aligns the synthetic demographic composition with the real WVS distribution. Synthetic data generation employed uniform sampling (30 responses per segment), whereas the real WVS exhibits unequal segment sizes reflecting natural population heterogeneity. Without weighting, distributional comparisons would confound true approximation quality with demographic composition differences.
+
+The weighting procedure involves two steps. First, segment-level adjustment weights correct for differences in group sizes between synthetic and real data: for each demographic segment, the adjustment weight equals the ratio of the segment's representation in real WVS data to its representation in synthetic data, scaled to the overall sample size. Second, these adjustment weights are multiplied by the original WVS survey weights (\texttt{W\_WEIGHT}) to incorporate the complex survey design. The final synthetic weight (\texttt{weight\_joint}) thus reflects both demographic composition alignment and the WVS sampling weights. This two-step procedure ensures that when synthetic distributions are aggregated (e.g., at the country level), the demographic composition mirrors the weighted real WVS distribution (with survey weights applied), enabling unbiased distributional distance calculations.
+
+\subsection{Equipercentile Equating}
+\label{subsec:equipercentile-equating}
+
+Equipercentile equating was employed to transform SWLS (1-7 scale) and OHQ (1-6 scale) scores to a common 1-10 scale, enabling direct distributional comparisons across all five questionnaires \cite{kolen2014equating, gesis2023equating}. Original WVS, Cantril Ladder, and Reverse Scale variants use 1-10 scales directly. Simple linear rescaling would impose arbitrary distributional shapes; equipercentile equating instead preserves percentile ranks, empirically determining score correspondence that maintains distributional characteristics.
+
+\subsubsection{Procedure}
+
+The core intuition behind equipercentile equating is straightforward: if a respondent scores at the 75th percentile on the SWLS scale, they should be mapped to the score corresponding to the 75th percentile on the WVS 1-10 scale. This preserves relative position in the distribution rather than imposing arbitrary linear transformations.
+
+To limit data leakage, a random 10\% subset of real WVS data (sampled with seed 42) was used exclusively to construct the mapping, while the full 100\% was used for subsequent comparisons. The procedure follows three steps:
+
+\textbf{Step 1: Construct the target percentile curve.} Using the 10\% WVS training subset ($D_{train}$), build the weighted Cumulative Distribution Function (CDF):
+\begin{equation}
+F_{target}(y) = \sum_{i \in D_{train}: r_i \leq y} v_i \Big/ \sum_{j \in D_{train}} v_j
+\end{equation}
+where $r_i$ are life satisfaction scores (1-10) and $v_i$ are sampling weights. Linear interpolation between observed scores produces a smooth percentile curve, solving the ``continuization'' challenge of discrete response categories.
+
+\textbf{Step 2: Map source scores to percentiles, then to target scores.} For SWLS (1-7) and OHQ (1-6), assume uniform distributions over source categories. Each integer $x$ corresponds to a percentile under this uniform assumption. This percentile is then mapped to the target 1-10 scale by inverting $F_{target}$:
+\begin{equation}
+y_{equated}(x) = F_{target}^{-1}\left(\text{Percentile}_{uniform}(x)\right)
+\end{equation}
+Results are rounded to integers and clipped to [1,10], producing fixed lookup tables with 7 SWLS mappings and 6 OHQ mappings.
+
+\textbf{Step 3: Apply fixed mappings to all synthetic data.} The lookup tables are applied uniformly to all synthetic responses, generating \texttt{life\_satisfaction\_equated} (SWLS) and \texttt{ohq\_equated} (OHQ). All five questionnaires now share a common 1-10 scale for distributional comparisons.
+
+\subsubsection{Implementation and Validation}
+
+The procedure was implemented using SciPy's \texttt{interp1d} interpolation function with weighted percentile calculations. The 10\%--90\% split balances competing considerations: using only 10\% for mapping construction limits data leakage that would artificially inflate equated scale performance, while using 100\% for evaluation maximizes statistical power. This is methodologically sound because the mapping is a fixed preprocessing step, not adapted during evaluation.
+
+Validation checks confirmed: (1) no endpoint bunching at scores 1 or 10, (2) monotonicity preserved (higher source scores map to higher target scores), and (3) no systematic distributional distortions relative to real WVS data.
+
+\subsection{Demographic Segmentation}
+\label{subsec:demographic-segments}
+
+The subgroup analysis (Section~\ref{sec:subgroup-results}) examines approximation quality across 36 demographic segments created through cross-classification of country, income level, and health status. This segmentation structure was designed to capture theoretically important demographic variation while maintaining sufficient sample sizes for reliable distributional comparisons.
+
+\subsubsection{Cross-Classification Structure}
+
+Demographic segments are defined by the combination of three factors:
+\begin{itemize}
+    \item \textbf{Countries}: 4 levels (USA, Indonesia, Netherlands, Mexico)
+    \item \textbf{Income levels}: 3 levels (Low, Medium, High)
+    \item \textbf{Health status}: 3 levels (Poor, Fair, Good)
+\end{itemize}
+
+The full factorial design produces $4 \times 3 \times 3 = 36$ unique demographic segments. Each segment represents a distinct subpopulation defined by specific combinations of geographic location, socioeconomic position, and health condition. For example, one segment comprises individuals in the United States with high income and good health, while another represents individuals in Indonesia with low income and poor health. The recoding procedures for income and health status are described in Section~\ref{subsec:wvs-data}.
+
+As described in Section~\ref{subsec:wvs-data}, income and health were selected based on Random Forest feature importance analysis (see Figure~\ref{fig:feature-importance}). Country captures cross-national variation, while income and health represent the most consequential within-country predictors. This three-factor design balances substantive coverage with statistical power.
+
+\subsubsection{Sample Structure Summary}
+
+The 36-segment structure defines the analytical scope for the subgroup analysis (Section~\ref{sec:subgroup-results}). Within each segment, distributional comparisons are conducted across all model-questionnaire combinations (3 models $\times$ 5 questionnaires = 15 configurations per segment). This produces 540 total segment-level distributional comparisons ($36 \times 15 = 540$).
+
+For country-level analysis (Section~\ref{sec:country-level-results}), segments are aggregated within each country to produce nationally representative distributions. This aggregation uses survey weights (\texttt{W\_WEIGHT} for real data, \texttt{weight\_joint} for synthetic data) to account for differential segment sizes and ensure valid population-level estimates. Country-level comparisons total 60 ($4$ countries $\times$ $3$ models $\times$ $5$ questionnaires = $60$).
+
+Table~\ref{tab:sample-structure} summarizes the sample structure across demographic segments and analytical levels.
+
+\begin{table}[htbp]
+\centering
+\caption{Sample structure for subgroup and country-level analyses}
+\label{tab:sample-structure}
+\begin{tabular}{lcc}
+\hline
+\textbf{Analytical Unit} & \textbf{Number of Units} & \textbf{Comparisons per Unit} \\
+\hline
+Demographic segment & 36 & 15 (3 models × 5 questionnaires) \\
+Country & 4 & 15 (3 models × 5 questionnaires) \\
+\hline
+\textbf{Total comparisons} & \multicolumn{2}{c}{600 (540 segment + 60 country)} \\
+\hline
+\end{tabular}
+\end{table}
+
+%-----------------------------------------------------------
+\section{Distributional Distance Metrics}
+\label{sec:distance-metrics}
+
+Two complementary metrics quantify distributional differences between synthetic and real life satisfaction distributions: Wasserstein distance (primary metric) and Kolmogorov-Smirnov statistic (secondary validation).
+
+\subsection{Wasserstein Distance}
+\label{subsec:wasserstein}
+
+The Wasserstein distance, also known as earth mover's distance, quantifies the minimum ``work'' required to transform one distribution into another \cite{villani2009optimal}. Formally, the first-order Wasserstein distance between distributions $P$ and $Q$ with CDFs $F_P$ and $F_Q$ is:
+
+\begin{equation}
+W_1(P, Q) = \int_{-\infty}^{\infty} |F_P(x) - F_Q(x)| \, dx
+\end{equation}
+
+For discrete weighted observations, this reduces to computing the area between empirical CDFs.
+
+\textbf{Advantages over alternatives.} The Wasserstein distance was selected over Kullback-Leibler divergence, Jensen-Shannon divergence, and total variation distance for five reasons: (1) true metric properties (symmetry, triangle inequality), (2) interpretability in original scale units (life satisfaction points), (3) sensitivity to full distributional shape beyond central tendency, (4) robustness to zero probabilities, and (5) natural accommodation of survey weights.
+
+\textbf{Implementation.} All calculations used SciPy's Wasserstein distance function \cite{virtanen2020scipy}, applying WVS sampling weights to real data and matching weights to synthetic data. The function returns scalar $W$ values representing average distance in life satisfaction units. Table~\ref{tab:wasserstein-interpretation} provides interpretation guidelines.
+
+\begin{table}[htbp]
+\centering
+\caption{Interpretation guidelines for Wasserstein distance values}
+\label{tab:wasserstein-interpretation}
+\begin{tabular}{lll}
+\hline
+\textbf{Wasserstein ($W$)} & \textbf{Assessment} & \textbf{Interpretation} \\
+\hline
+0.0--0.5 & Excellent & Near-perfect approximation \\
+0.5--1.0 & Good & Minor differences \\
+1.0--1.5 & Moderate & Noticeable differences \\
+1.5--2.0 & Fair & Substantial differences \\
+$>$ 2.0 & Poor & Large discrepancies \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Kolmogorov-Smirnov Statistic}
+\label{subsec:ks-statistic}
+
+The Kolmogorov-Smirnov (KS) statistic provides secondary validation \cite{massey1951ks}. While Wasserstein distance integrates total area between CDFs, KS identifies maximum point-wise divergence:
+
+\begin{equation}
+D_{KS} = \sup_{x} |F_P(x) - F_Q(x)|
+\end{equation}
+
+where $\sup$ denotes the supremum (maximum), and $F_P$, $F_Q$ are CDFs. Values range from 0 (identical) to 1 (non-overlapping).
+
+\textbf{Dual-metric validation.} Computing both metrics serves three purposes: (1) \textit{convergent validity}---correlation $r = 0.755$ ($p < 0.001$) across 540 comparisons confirms both metrics identify good vs. poor approximations; (2) \textit{complementary information}---Wasserstein quantifies overall shift, KS locates maximum divergence point; (3) \textit{robustness check}---58.3\% of segments show identical best configurations under both metrics, with disagreements indicating multiple viable strategies.
+
+\textbf{Decision rule.} Given superior interpretability (life satisfaction units vs. abstract probabilities), primary analyses use Wasserstein distance. KS statistics are reported in tables and discussed when disagreements provide informative insights about multiple good approximations.
+
+%-----------------------------------------------------------
+\section{Variance Decomposition Analysis}
+\label{sec:variance-decomposition}
+
+The variance decomposition analysis addresses the fundamental question: ``Which factors matter most for distributional approximation quality?'' \cite{searle1992variance}. Across the 540 segment-level comparisons (36 demographic segments $\times$ 5 questionnaires $\times$ 3 models), Wasserstein distances vary considerably. The variance decomposition quantifies the relative importance of five factors in explaining this variation: country, income level, health status, questionnaire type, and LLM model.
+
+\subsection{Rationale and Purpose}
+\label{subsec:variance-rationale}
+
+The variance decomposition serves to quantify how much each factor spreads out the distribution of Wasserstein distances. A factor with high relative importance is one where knowing the factor level substantially reduces uncertainty about the expected approximation quality. For example, if certain countries consistently yield better approximations than others, the ``country'' factor will explain a large proportion of variance; conversely, if approximation quality is similar across countries, the country factor will contribute little to total variance.
+
+This approach is particularly suitable for the study design, which involves an unbalanced factorial structure with unequal numbers of factor levels (3 models, 4 countries, 5 questionnaires, 3 income levels, 3 health levels). Traditional ANOVA-based eta-squared estimates require balanced designs and assume orthogonal factors without interactions. The variance decomposition method employed here makes no such assumptions, instead providing a descriptive measure of how much each factor spreads out group means relative to total variation.
+
+\subsection{Method: Between-Group Variance Ratio}
+\label{subsec:variance-method}
+
+For each factor $F$ (e.g., health status), the relative importance is computed through the following four-step procedure:
+
+\textbf{Step 1: Calculate total variance.} Compute the variance of Wasserstein distances across all 540 segment-level comparisons:
+
+\begin{equation}
+\sigma^2_{total} = \text{Var}(W)
+\end{equation}
+
+where $W$ represents the vector of all Wasserstein distance values.
+
+\textbf{Step 2: Calculate group means.} For each level $k$ of factor $F$, compute the mean Wasserstein distance:
+
+\begin{equation}
+\mu_k = \mathbb{E}[W \mid F = k]
+\end{equation}
+
+For example, if $F$ represents health status with three levels (Good, Fair, Poor), this step computes three group means: $\mu_{Good}$, $\mu_{Fair}$, and $\mu_{Poor}$.
+
+\textbf{Step 3: Calculate between-group variance.} Quantify how much the group means spread out around the grand mean:
+
+\begin{equation}
+\sigma^2_{between} = \frac{1}{K} \sum_{k=1}^{K} (\mu_k - \mu_{grand})^2
+\end{equation}
+
+where $K$ is the number of factor levels and $\mu_{grand}$ is the overall mean across all observations.
+
+\textbf{Step 4: Calculate relative importance.} Express the between-group variance as a percentage of total variance:
+
+\begin{equation}
+RI_F = \left( \frac{\sigma^2_{between}}{\sigma^2_{total}} \right) \times 100\%
+\end{equation}
+
+Higher values of $RI_F$ indicate that the factor explains more of the observed variation in Wasserstein distances. A value of $RI_F = 30\%$ means that 30\% of the total variance in approximation quality is attributable to differences between the factor's levels.
+
+\subsubsection{Mathematical Justification}
+\label{subsubsec:variance-justification}
+
+The relative importance measure quantifies the extent to which knowing a factor's level reduces uncertainty about the expected Wasserstein distance. This interpretation is grounded in the variance decomposition principle:
+
+\begin{equation}
+\text{Total Variance} = \text{Between-Group Variance} + \text{Within-Group Variance}
+\end{equation}
+
+The ratio $\sigma^2_{between} / \sigma^2_{total}$ thus captures the proportion of total variability that is attributable to group membership. Factors with large between-group variance (i.e., widely separated group means) explain more of the total variation than factors with small between-group variance (i.e., similar group means).
+
+Note that this measure is a descriptive index of relative importance, not a formal effect size estimate such as eta-squared ($\eta^2$) from ANOVA. The relative importance percentages do not sum to 100\% because factors are non-orthogonal and the measure captures average effects across all factor combinations rather than unique variance explained. This approach suits exploratory analysis where the goal is identifying which factors have the largest average effects, providing intuitive interpretation without requiring strong assumptions of traditional ANOVA models.
+
+To assess whether the observed differences in approximation quality across factor levels are statistically significant, the F-test from one-way Analysis of Variance (ANOVA) is employed for each factor independently \parencite{fisher1925statistical}. The F-statistic quantifies the ratio of between-group variance to within-group variance; a large F-value indicates that group means differ more than would be expected by chance. Factors with p $<$ .05 are considered statistically significant.
+
+The variance decomposition is applied to the 540 segment-level comparisons (36 demographic segments $\times$ 5 questionnaires $\times$ 3 models). For each segment, the best configuration is identified by determining which model-questionnaire combination yields minimum Wasserstein distance and checking whether the same configuration also minimizes KS statistic, with agreement providing convergent evidence.
+
+%-----------------------------------------------------------
+\section{Score-Level Analysis}
+\label{sec:score-level-method}
+
+The preceding analyses examine approximation quality through aggregate distributional metrics that compare entire distributions. This section introduces a complementary approach that examines approximation quality at the level of individual satisfaction scores, addressing which specific life satisfaction scores (1--10) are predicted more accurately by LLMs. Aggregate metrics such as Wasserstein distance may obscure systematic patterns in how LLMs approximate specific response categories; for instance, if LLMs consistently over-predict moderate satisfaction levels while under-predicting extreme levels, this pattern would be partially captured by aggregate metrics but not explicitly identified.
+
+For each life satisfaction score $s \in \{1, 2, \ldots, 10\}$, let $p_s^{real}$ denote the weighted proportion of real WVS respondents selecting score $s$, and $p_s^{synth}$ denote the corresponding proportion in synthetic data. The primary metric is the absolute error:
+
+\begin{equation}
+\text{AbsError}_s = |p_s^{real} - p_s^{synth}|
+\label{eq:score-abs-error}
+\end{equation}
+
+This metric quantifies the discrepancy between real and synthetic proportions at each score level, expressed in probability units (range: 0 to 1). To assess prediction bias direction, the signed difference $\text{Difference}_s = p_s^{synth} - p_s^{real}$ is also computed, where positive values indicate over-prediction and negative values indicate under-prediction.
+
+Score-level metrics are computed for each combination of model, questionnaire, and country, yielding 60 distributional comparisons and 600 total score-level observations (10 scores per comparison). Proportions incorporate survey weights for real WVS data and matching weights for synthetic data. Results are aggregated at overall, questionnaire-level, and model-level to distinguish universal patterns from conditional patterns that depend on specific questionnaires or models.
+
+%-----------------------------------------------------------
+\section{Ensemble Approaches}
+\label{sec:ensemble-approaches}
+
+The ensemble analysis addresses RQ3 by testing whether combining results from multiple questionnaires improves alignment with real survey responses beyond what any single questionnaire achieves. Two ensemble strategies are evaluated, both grounded in the principle that different measurement instruments may capture complementary aspects of life satisfaction, and their combination may reduce measurement-specific biases.
+
+\subsection{Rationale for Ensemble Methods}
+\label{subsec:ensemble-rationale}
+
+Ensemble methods are widely used in machine learning and psychometrics to improve prediction accuracy and reduce error variance \cite{dietterich2000ensemble}. In the context of synthetic survey data, different questionnaire formats may introduce systematic biases---for example, metaphorical framing (Cantril Ladder) may elicit different response patterns than direct assessment (Original WVS), and multi-item scales (SWLS, OHQ) may capture different facets of the underlying construct than single-item measures.
+
+By combining predictions across multiple questionnaires, ensemble approaches can potentially reduce questionnaire-specific measurement error through averaging, capture complementary information from different measurement approaches, and improve robustness by not relying on any single instrument's performance. The ensemble analysis excludes the Reverse Scale questionnaire due to its consistently poor performance identified in preliminary analyses; including poorly-performing instruments would degrade ensemble quality rather than improve it.
+
+\subsection{KS-Based Optimal Weighting}
+\label{subsec:ks-weighting}
+
+The KS-based ensemble assigns differential weights to questionnaires based on their individual performance, giving higher weight to better-performing instruments. This approach assumes that questionnaires demonstrating stronger alignment with real data should contribute more to the combined prediction. Importantly, this method requires prior knowledge of questionnaire performance from existing human survey data; in real-world applications where no human responses are available, such performance-based weighting would not be feasible. The KS statistic was chosen over Wasserstein distance for weighting because it is naturally bounded between 0 and 1, enabling direct conversion to weights without requiring arbitrary normalization of unbounded distance metrics.
+
+\subsubsection{Weight Calculation}
+
+For each model $m$, questionnaire weights are calculated using inverse KS statistics averaged across countries:
+
+\begin{equation}
+w_q^{(m)} = \frac{1 - \overline{KS}_q^{(m)}}{\sum_{q'=1}^{Q} (1 - \overline{KS}_{q'}^{(m)})}
+\label{eq:ks-weights}
+\end{equation}
+
+where $\overline{KS}_q^{(m)}$ is the mean KS statistic for questionnaire $q$ using model $m$ across all four countries, and $Q = 4$ is the number of questionnaires in the ensemble (Original WVS, Cantril Ladder, SWLS, OHQ).
+
+The weight formula has intuitive interpretation: questionnaires with lower KS statistics (better alignment) receive higher weights. The denominator normalizes weights to sum to 1, ensuring the ensemble produces valid probability distributions.
+
+\subsubsection{Ensemble Distribution Construction}
+
+For each model-country combination, the KS-weighted ensemble distribution is constructed by:
+
+\textbf{Step 1: Obtain individual distributions.} For each of the four questionnaires, compute the weighted histogram of synthetic life satisfaction responses on the 1-10 scale, using the matching weights (\texttt{weight\_joint}) to ensure demographic representativeness.
+
+\textbf{Step 2: Apply questionnaire weights.} Combine the four questionnaire distributions using the KS-based weights:
+
+\begin{equation}
+P_{ensemble}(x) = \sum_{q=1}^{Q} w_q \cdot P_q(x)
+\label{eq:ensemble-distribution}
+\end{equation}
+
+where $P_q(x)$ is the probability mass at satisfaction level $x$ for questionnaire $q$, and $w_q$ are the KS-based weights from Equation~\ref{eq:ks-weights}.
+
+\textbf{Step 3: Compute distributional distance.} Calculate Wasserstein distance and KS statistic between the ensemble distribution and the real WVS distribution for the corresponding country.
+
+\subsection{Equal-Weight Averaging}
+\label{subsec:equal-weight}
+
+The equal-weight ensemble treats all four questionnaires as equally valid measurement approaches, assigning uniform weights:
+
+\begin{equation}
+w_q = \frac{1}{Q} = 0.25 \quad \text{for all } q \in \{1, 2, 3, 4\}
+\label{eq:equal-weights}
+\end{equation}
+
+This approach makes no assumptions about differential questionnaire quality and provides a simple baseline for comparison with the performance-based KS weighting. Equal weighting is robust to potential overfitting that could occur if KS-based weights are optimized on the same data used for evaluation.
+
+The ensemble distribution construction follows the same procedure as KS-based weighting (Section~\ref{subsec:ks-weighting}), substituting equal weights for performance-based weights in Equation~\ref{eq:ensemble-distribution}.
+
+%-----------------------------------------------------------
+\section{Software and Implementation}
+\label{sec:software}
+
+All data processing, statistical analysis, and visualization were performed using Python 3.11.3. The computational environment relied on the following key packages:
+
+\begin{itemize}
+    \item \textbf{Data manipulation}: \texttt{pandas} (2.1.0), \texttt{numpy} (1.25.2)
+    \item \textbf{Statistical analysis}: \texttt{scipy} (1.11.3) for Wasserstein distance and KS statistic computation, \texttt{scikit-learn} (1.3.0) for feature importance analysis
+    \item \textbf{Visualization}: \texttt{matplotlib} (3.7.2), \texttt{seaborn} (0.12.2)
+    \item \textbf{LLM inference}: \texttt{openai} (1.3.0) for API-based synthetic response generation
+    \item \textbf{Additional utilities}: \texttt{tqdm} (4.66.1) for progress tracking during generation, \texttt{umap-learn} (0.5.4) for dimensionality reduction visualizations
+\end{itemize}
+
+\textbf{Wasserstein distance computation.} All distributional comparisons used SciPy's Wasserstein distance function, which implements the first-order Wasserstein metric with support for weighted observations.
+
+\textbf{Code availability.} Complete analysis code, including data preprocessing, synthetic data generation, distributional comparisons, variance decomposition, and visualization scripts, along with all necessary data, is available at \url{https://github.com/milanataova/master-thesis}.
+
+%-----------------------------------------------------------
+% End of Chapter 4

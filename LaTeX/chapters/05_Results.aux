@@ -1,0 +1,238 @@
+\relax 
+\providecommand\hyper@newdestlabel[2]{}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Results}{35}{chapter.136}\protected@file@percent }
+\@writefile{lof}{\addvspace {10\p@ }}
+\@writefile{lot}{\addvspace {10\p@ }}
+\newlabel{ch:results}{{5}{35}{Results}{chapter.136}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Overview of Results}{35}{section.137}\protected@file@percent }
+\newlabel{sec:results-overview}{{5.1}{35}{Overview of Results}{section.137}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Country-Level Evaluation}{35}{section.138}\protected@file@percent }
+\newlabel{sec:country-level-results}{{5.2}{35}{Country-Level Evaluation}{section.138}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.1}{\ignorespaces Country-level performance by model (averaged across questionnaires and countries)}}{36}{table.caption.139}\protected@file@percent }
+\newlabel{tab:model-country-results}{{5.1}{36}{Country-level performance by model (averaged across questionnaires and countries)}{table.caption.139}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.2}{\ignorespaces Country-level performance by questionnaire type (averaged across models and countries)}}{36}{table.caption.140}\protected@file@percent }
+\newlabel{tab:questionnaire-country-results}{{5.2}{36}{Country-level performance by questionnaire type (averaged across models and countries)}{table.caption.140}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.3}{\ignorespaces Country-level performance by country (averaged across models and questionnaires)}}{36}{table.caption.141}\protected@file@percent }
+\newlabel{tab:geographic-results}{{5.3}{36}{Country-level performance by country (averaged across models and questionnaires)}{table.caption.141}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.2.1}Distributional Comparisons}{37}{subsection.142}\protected@file@percent }
+\newlabel{subsec:distributional-comparisons}{{5.2.1}{37}{Distributional Comparisons}{subsection.142}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.1}{\ignorespaces Life satisfaction distributions for the United States. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Original WVS and SWLS track the real distribution most closely, while REVERSE shows systematic deviation; LLaMA 3.1 8B achieves the tightest overall alignment.}}{37}{figure.caption.144}\protected@file@percent }
+\newlabel{fig:distribution-usa}{{5.1}{37}{Life satisfaction distributions for the United States. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Original WVS and SWLS track the real distribution most closely, while REVERSE shows systematic deviation; LLaMA 3.1 8B achieves the tightest overall alignment}{figure.caption.144}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.2}{\ignorespaces Life satisfaction distributions for the Netherlands. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. The Netherlands shows the best overall alignment, with LLaMA 3.1 8B achieving near-perfect approximation using Original WVS (W = 0.16); REVERSE again produces the largest deviations.}}{38}{figure.caption.146}\protected@file@percent }
+\newlabel{fig:distribution-nld}{{5.2}{38}{Life satisfaction distributions for the Netherlands. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. The Netherlands shows the best overall alignment, with LLaMA 3.1 8B achieving near-perfect approximation using Original WVS (W = 0.16); REVERSE again produces the largest deviations}{figure.caption.146}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.3}{\ignorespaces Life satisfaction distributions for Indonesia. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. LLaMA 3.1 8B with Original WVS best reproduces the peak location, while REVERSE shows nearly inverted patterns with peaks at levels 3--4 instead of 7--8.}}{38}{figure.caption.148}\protected@file@percent }
+\newlabel{fig:distribution-idn}{{5.3}{38}{Life satisfaction distributions for Indonesia. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. LLaMA 3.1 8B with Original WVS best reproduces the peak location, while REVERSE shows nearly inverted patterns with peaks at levels 3--4 instead of 7--8}{figure.caption.148}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.4}{\ignorespaces Life satisfaction distributions for Mexico. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Mexico presents the highest approximation difficulty, with synthetic distributions consistently underestimating concentration at the highest satisfaction levels (9--10).}}{39}{figure.caption.150}\protected@file@percent }
+\newlabel{fig:distribution-mex}{{5.4}{39}{Life satisfaction distributions for Mexico. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Mexico presents the highest approximation difficulty, with synthetic distributions consistently underestimating concentration at the highest satisfaction levels (9--10)}{figure.caption.150}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.5}{\ignorespaces Wasserstein distance by model and questionnaire across countries. Each panel represents one country, with models grouped on the x-axis and questionnaire types distinguished by color. Lower bars indicate better approximation. The REVERSE questionnaire (orange) consistently shows the highest Wasserstein distances, while Original WVS (green) and SWLS (purple) typically achieve the best performance.}}{40}{figure.caption.152}\protected@file@percent }
+\newlabel{fig:wasserstein-by-country}{{5.5}{40}{Wasserstein distance by model and questionnaire across countries. Each panel represents one country, with models grouped on the x-axis and questionnaire types distinguished by color. Lower bars indicate better approximation. The REVERSE questionnaire (orange) consistently shows the highest Wasserstein distances, while Original WVS (green) and SWLS (purple) typically achieve the best performance}{figure.caption.152}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.6}{\ignorespaces UMAP projections of aggregated life satisfaction distributions by country and LLM. Points cluster primarily by questionnaire type (color) rather than country (shape), indicating that measurement instrument choice has a stronger influence on distributional similarity than geographic context.}}{41}{figure.caption.153}\protected@file@percent }
+\newlabel{fig:umap-combined}{{5.6}{41}{UMAP projections of aggregated life satisfaction distributions by country and LLM. Points cluster primarily by questionnaire type (color) rather than country (shape), indicating that measurement instrument choice has a stronger influence on distributional similarity than geographic context}{figure.caption.153}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.3}Subgroup Analysis}{42}{section.154}\protected@file@percent }
+\newlabel{sec:subgroup-results}{{5.3}{42}{Subgroup Analysis}{section.154}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.1}Variance Decomposition}{42}{subsection.156}\protected@file@percent }
+\newlabel{subsec:variance-decomposition-results}{{5.3.1}{42}{Variance Decomposition}{subsection.156}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.4}{\ignorespaces Variance decomposition results: relative importance of factors in explaining Wasserstein distance variation}}{42}{table.caption.157}\protected@file@percent }
+\newlabel{tab:variance-decomposition}{{5.4}{42}{Variance decomposition results: relative importance of factors in explaining Wasserstein distance variation}{table.caption.157}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.7}{\ignorespaces Specification curve showing approximation quality across all 540 segment-level comparisons. Top panel: Wasserstein distances sorted from highest (worst) to lowest (best), with points colored by questionnaire type. Bottom panel: Indicator markers showing which factor levels (questionnaire, model, country, health status, income level) correspond to each specification. The dashed line indicates the overall mean (W = 2.09). Reverse Scale configurations (orange) cluster predominantly among the worst-performing specifications, while Netherlands and LLaMA 3.1 8B dominate the best-performing region.}}{43}{figure.caption.155}\protected@file@percent }
+\newlabel{fig:specification-curve}{{5.7}{43}{Specification curve showing approximation quality across all 540 segment-level comparisons. Top panel: Wasserstein distances sorted from highest (worst) to lowest (best), with points colored by questionnaire type. Bottom panel: Indicator markers showing which factor levels (questionnaire, model, country, health status, income level) correspond to each specification. The dashed line indicates the overall mean (W = 2.09). Reverse Scale configurations (orange) cluster predominantly among the worst-performing specifications, while Netherlands and LLaMA 3.1 8B dominate the best-performing region}{figure.caption.155}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.8}{\ignorespaces Variance decomposition results showing relative importance of each factor in explaining Wasserstein distance variation. Health status emerges as the dominant factor, while income level shows negligible importance and is not statistically significant.}}{44}{figure.caption.158}\protected@file@percent }
+\newlabel{fig:variance-decomposition}{{5.8}{44}{Variance decomposition results showing relative importance of each factor in explaining Wasserstein distance variation. Health status emerges as the dominant factor, while income level shows negligible importance and is not statistically significant}{figure.caption.158}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.2}Demographic Effects}{44}{subsection.159}\protected@file@percent }
+\newlabel{subsec:demographic-effects}{{5.3.2}{44}{Demographic Effects}{subsection.159}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.5}{\ignorespaces Approximation quality by health status}}{44}{table.caption.160}\protected@file@percent }
+\newlabel{tab:health-effects}{{5.5}{44}{Approximation quality by health status}{table.caption.160}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.6}{\ignorespaces Approximation quality by income level}}{45}{table.caption.161}\protected@file@percent }
+\newlabel{tab:income-effects}{{5.6}{45}{Approximation quality by income level}{table.caption.161}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.3}Model and Questionnaire Effects}{45}{subsection.162}\protected@file@percent }
+\newlabel{subsec:model-questionnaire-effects}{{5.3.3}{45}{Model and Questionnaire Effects}{subsection.162}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.7}{\ignorespaces Model performance across 540 segment-level comparisons}}{45}{table.caption.163}\protected@file@percent }
+\newlabel{tab:model-segment}{{5.7}{45}{Model performance across 540 segment-level comparisons}{table.caption.163}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.8}{\ignorespaces Questionnaire performance across 540 segment-level comparisons}}{45}{table.caption.164}\protected@file@percent }
+\newlabel{tab:questionnaire-segment}{{5.8}{45}{Questionnaire performance across 540 segment-level comparisons}{table.caption.164}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.3.4}Score-Level Accuracy}{46}{subsection.165}\protected@file@percent }
+\newlabel{subsec:score-level-results}{{5.3.4}{46}{Score-Level Accuracy}{subsection.165}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.9}{\ignorespaces Score-level prediction accuracy (averaged across all conditions)}}{46}{table.caption.166}\protected@file@percent }
+\newlabel{tab:score-level-overall}{{5.9}{46}{Score-level prediction accuracy (averaged across all conditions)}{table.caption.166}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\nonumberline Prediction Bias Direction}{46}{subsubsection*.168}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.9}{\ignorespaces LLM prediction bias by life satisfaction score. Positive values (red) indicate over-prediction; negative values (green) indicate under-prediction. Error bars show standard deviation.}}{47}{figure.caption.169}\protected@file@percent }
+\newlabel{fig:score-level-direction}{{5.9}{47}{LLM prediction bias by life satisfaction score. Positive values (red) indicate over-prediction; negative values (green) indicate under-prediction. Error bars show standard deviation}{figure.caption.169}{}}
+\@writefile{toc}{\contentsline {subsubsection}{\nonumberline Variation by Questionnaire Type}{47}{subsubsection*.171}\protected@file@percent }
+\@writefile{lof}{\contentsline {figure}{\numberline {5.10}{\ignorespaces Comparison of real WVS and synthetic score distributions by model. All models show similar biases: under-prediction of score 10 and over-prediction of scores 4--6.}}{48}{figure.caption.172}\protected@file@percent }
+\newlabel{fig:score-level-real-vs-synth}{{5.10}{48}{Comparison of real WVS and synthetic score distributions by model. All models show similar biases: under-prediction of score 10 and over-prediction of scores 4--6}{figure.caption.172}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.4}Ensemble Approaches}{48}{section.173}\protected@file@percent }
+\newlabel{sec:ensemble-results}{{5.4}{48}{Ensemble Approaches}{section.173}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.1}Ensemble Construction}{48}{subsection.174}\protected@file@percent }
+\newlabel{subsec:ensemble-construction}{{5.4.1}{48}{Ensemble Construction}{subsection.174}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.2}Ensemble Performance}{48}{subsection.175}\protected@file@percent }
+\newlabel{subsec:ensemble-performance}{{5.4.2}{48}{Ensemble Performance}{subsection.175}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.10}{\ignorespaces Ensemble performance compared to individual questionnaires (averaged across models and countries)}}{49}{table.caption.176}\protected@file@percent }
+\newlabel{tab:ensemble-results}{{5.10}{49}{Ensemble performance compared to individual questionnaires (averaged across models and countries)}{table.caption.176}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.11}{\ignorespaces Ensemble performance by model (Wasserstein distance)}}{49}{table.caption.178}\protected@file@percent }
+\newlabel{tab:ensemble-by-model}{{5.11}{49}{Ensemble performance by model (Wasserstein distance)}{table.caption.178}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.12}{\ignorespaces Ensemble performance by country (Wasserstein distance, averaged across models)}}{49}{table.caption.179}\protected@file@percent }
+\newlabel{tab:ensemble-by-country}{{5.12}{49}{Ensemble performance by country (Wasserstein distance, averaged across models)}{table.caption.179}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.11}{\ignorespaces Wasserstein distance comparison across all approaches. Each panel shows one country, with models on the x-axis and questionnaire types distinguished by color. Ensemble (light gray) and Average (dark gray) approaches consistently achieve lower Wasserstein distances than individual questionnaires, demonstrating the benefit of combining multiple measurement instruments.}}{50}{figure.caption.177}\protected@file@percent }
+\newlabel{fig:wasserstein-ensemble}{{5.11}{50}{Wasserstein distance comparison across all approaches. Each panel shows one country, with models on the x-axis and questionnaire types distinguished by color. Ensemble (light gray) and Average (dark gray) approaches consistently achieve lower Wasserstein distances than individual questionnaires, demonstrating the benefit of combining multiple measurement instruments}{figure.caption.177}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {5.4.3}Practical Implications for RQ3}{50}{subsection.184}\protected@file@percent }
+\newlabel{subsec:rq3-implications}{{5.4.3}{50}{Practical Implications for RQ3}{subsection.184}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.12}{\ignorespaces Life satisfaction distributions for the United States comparing all approaches. Black line shows real WVS data; colored lines show individual questionnaires; gray lines show ensemble (light) and average (dark) approaches. Each panel represents one LLM.}}{51}{figure.caption.180}\protected@file@percent }
+\newlabel{fig:scatter-ensemble-usa}{{5.12}{51}{Life satisfaction distributions for the United States comparing all approaches. Black line shows real WVS data; colored lines show individual questionnaires; gray lines show ensemble (light) and average (dark) approaches. Each panel represents one LLM}{figure.caption.180}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.13}{\ignorespaces Life satisfaction distributions for the Netherlands comparing all approaches. The Netherlands shows the best overall alignment, with ensemble approaches achieving near-perfect approximation.}}{51}{figure.caption.181}\protected@file@percent }
+\newlabel{fig:scatter-ensemble-nld}{{5.13}{51}{Life satisfaction distributions for the Netherlands comparing all approaches. The Netherlands shows the best overall alignment, with ensemble approaches achieving near-perfect approximation}{figure.caption.181}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.14}{\ignorespaces Life satisfaction distributions for Indonesia comparing all approaches. The ensemble approaches better capture the right-skewed distribution characteristic of Indonesian responses.}}{51}{figure.caption.182}\protected@file@percent }
+\newlabel{fig:scatter-ensemble-idn}{{5.14}{51}{Life satisfaction distributions for Indonesia comparing all approaches. The ensemble approaches better capture the right-skewed distribution characteristic of Indonesian responses}{figure.caption.182}{}}
+\@writefile{lof}{\contentsline {figure}{\numberline {5.15}{\ignorespaces Life satisfaction distributions for Mexico comparing all approaches. Mexico shows the highest variation across approaches, with ensemble methods providing moderate improvement.}}{52}{figure.caption.183}\protected@file@percent }
+\newlabel{fig:scatter-ensemble-mex}{{5.15}{52}{Life satisfaction distributions for Mexico comparing all approaches. Mexico shows the highest variation across approaches, with ensemble methods providing moderate improvement}{figure.caption.183}{}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.5}Summary of Findings}{52}{section.185}\protected@file@percent }
+\newlabel{sec:results-summary}{{5.5}{52}{Summary of Findings}{section.185}{}}
+\@writefile{lot}{\contentsline {table}{\numberline {5.13}{\ignorespaces Summary of key findings by research question}}{52}{table.caption.186}\protected@file@percent }
+\newlabel{tab:findings-summary}{{5.13}{52}{Summary of key findings by research question}{table.caption.186}{}}
+\@setckpt{chapters/05_Results}{
+\setcounter{page}{54}
+\setcounter{equation}{0}
+\setcounter{enumi}{29}
+\setcounter{enumii}{0}
+\setcounter{enumiii}{0}
+\setcounter{enumiv}{0}
+\setcounter{footnote}{0}
+\setcounter{mpfootnote}{0}
+\setcounter{part}{0}
+\setcounter{chapter}{5}
+\setcounter{section}{5}
+\setcounter{subsection}{0}
+\setcounter{subsubsection}{0}
+\setcounter{paragraph}{0}
+\setcounter{subparagraph}{0}
+\setcounter{figure}{15}
+\setcounter{table}{13}
+\setcounter{tabx@nest}{0}
+\setcounter{listtotal}{0}
+\setcounter{listcount}{0}
+\setcounter{liststart}{0}
+\setcounter{liststop}{0}
+\setcounter{citecount}{0}
+\setcounter{citetotal}{0}
+\setcounter{multicitecount}{0}
+\setcounter{multicitetotal}{0}
+\setcounter{instcount}{90}
+\setcounter{maxnames}{3}
+\setcounter{minnames}{1}
+\setcounter{maxitems}{3}
+\setcounter{minitems}{1}
+\setcounter{citecounter}{0}
+\setcounter{maxcitecounter}{0}
+\setcounter{savedcitecounter}{0}
+\setcounter{uniquelist}{0}
+\setcounter{uniquename}{0}
+\setcounter{refsection}{0}
+\setcounter{refsegment}{0}
+\setcounter{maxextratitle}{0}
+\setcounter{maxextratitleyear}{0}
+\setcounter{maxextraname}{2}
+\setcounter{maxextradate}{0}
+\setcounter{maxextraalpha}{0}
+\setcounter{abbrvpenalty}{50}
+\setcounter{highnamepenalty}{50}
+\setcounter{lownamepenalty}{25}
+\setcounter{maxparens}{3}
+\setcounter{parenlevel}{0}
+\setcounter{blx@maxsection}{0}
+\setcounter{mincomprange}{10}
+\setcounter{maxcomprange}{100000}
+\setcounter{mincompwidth}{1}
+\setcounter{afterword}{0}
+\setcounter{savedafterword}{0}
+\setcounter{annotator}{0}
+\setcounter{savedannotator}{0}
+\setcounter{author}{0}
+\setcounter{savedauthor}{0}
+\setcounter{bookauthor}{0}
+\setcounter{savedbookauthor}{0}
+\setcounter{commentator}{0}
+\setcounter{savedcommentator}{0}
+\setcounter{editor}{0}
+\setcounter{savededitor}{0}
+\setcounter{editora}{0}
+\setcounter{savededitora}{0}
+\setcounter{editorb}{0}
+\setcounter{savededitorb}{0}
+\setcounter{editorc}{0}
+\setcounter{savededitorc}{0}
+\setcounter{foreword}{0}
+\setcounter{savedforeword}{0}
+\setcounter{holder}{0}
+\setcounter{savedholder}{0}
+\setcounter{introduction}{0}
+\setcounter{savedintroduction}{0}
+\setcounter{namea}{0}
+\setcounter{savednamea}{0}
+\setcounter{nameb}{0}
+\setcounter{savednameb}{0}
+\setcounter{namec}{0}
+\setcounter{savednamec}{0}
+\setcounter{translator}{0}
+\setcounter{savedtranslator}{0}
+\setcounter{shortauthor}{0}
+\setcounter{savedshortauthor}{0}
+\setcounter{shorteditor}{0}
+\setcounter{savedshorteditor}{0}
+\setcounter{labelname}{0}
+\setcounter{savedlabelname}{0}
+\setcounter{institution}{0}
+\setcounter{savedinstitution}{0}
+\setcounter{lista}{0}
+\setcounter{savedlista}{0}
+\setcounter{listb}{0}
+\setcounter{savedlistb}{0}
+\setcounter{listc}{0}
+\setcounter{savedlistc}{0}
+\setcounter{listd}{0}
+\setcounter{savedlistd}{0}
+\setcounter{liste}{0}
+\setcounter{savedliste}{0}
+\setcounter{listf}{0}
+\setcounter{savedlistf}{0}
+\setcounter{location}{0}
+\setcounter{savedlocation}{0}
+\setcounter{organization}{0}
+\setcounter{savedorganization}{0}
+\setcounter{origlocation}{0}
+\setcounter{savedoriglocation}{0}
+\setcounter{origpublisher}{0}
+\setcounter{savedorigpublisher}{0}
+\setcounter{publisher}{0}
+\setcounter{savedpublisher}{0}
+\setcounter{language}{0}
+\setcounter{savedlanguage}{0}
+\setcounter{origlanguage}{0}
+\setcounter{savedoriglanguage}{0}
+\setcounter{pageref}{0}
+\setcounter{savedpageref}{0}
+\setcounter{textcitecount}{1}
+\setcounter{textcitetotal}{1}
+\setcounter{textcitemaxnames}{0}
+\setcounter{biburlbigbreakpenalty}{100}
+\setcounter{biburlbreakpenalty}{200}
+\setcounter{biburlnumpenalty}{0}
+\setcounter{biburlucpenalty}{0}
+\setcounter{biburllcpenalty}{0}
+\setcounter{smartand}{1}
+\setcounter{bbx:relatedcount}{0}
+\setcounter{bbx:relatedtotal}{0}
+\setcounter{section@level}{1}
+\setcounter{Item}{34}
+\setcounter{Hfootnote}{0}
+\setcounter{bookmark@seq@number}{0}
+\setcounter{caption@flags}{2}
+\setcounter{continuedfloat}{0}
+\setcounter{parentequation}{0}
+\setcounter{BAenumi}{0}
+\setcounter{float@type}{4}
+\setcounter{subfigure}{0}
+\setcounter{lofdepth}{1}
+\setcounter{subtable}{0}
+\setcounter{lotdepth}{1}
+\setcounter{LT@tables}{0}
+\setcounter{LT@chunks}{0}
+}

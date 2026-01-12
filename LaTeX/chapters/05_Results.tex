@@ -1,0 +1,520 @@
+% Chapter 5: Results
+% This chapter presents findings from the three analytical approaches: country-level evaluation, subgroup analysis, and ensemble methods
+
+\chapter{Results}
+\label{ch:results}
+
+\section{Overview of Results}
+\label{sec:results-overview}
+
+This chapter presents the empirical findings from the three analytical approaches described in Chapter~\ref{ch:method}. The analysis addresses the three research questions through progressively detailed examination of distributional alignment between synthetic and real survey responses. Section~\ref{sec:country-level-results} presents country-level results aggregated across demographic subgroups, providing a broad assessment of approximation quality across the 60 model-questionnaire-country combinations. Section~\ref{sec:subgroup-results} examines the 540 segment-level comparisons, employing variance decomposition to identify which factors most strongly influence approximation quality. Section~\ref{sec:ensemble-results} evaluates whether ensemble methods combining multiple questionnaires can improve alignment beyond individual scales.
+
+Throughout this chapter, approximation quality is quantified using Wasserstein distance as the primary metric, with lower values indicating better alignment between synthetic and real distributions. Kolmogorov-Smirnov (KS) statistics are reported as secondary validation. All comparisons incorporate survey weights to ensure nationally representative estimates.
+
+%-----------------------------------------------------------
+\section{Country-Level Evaluation}
+\label{sec:country-level-results}
+
+The country-level evaluation addresses RQ1 (overall approximation quality) and RQ2 (questionnaire differences) through 60 distributional comparisons aggregated at the national level. Across all comparisons, mean Wasserstein distance was 1.44 (SD = 0.72), indicating that on average, synthetic distributions differed from real WVS distributions by approximately 1.4 points on the 10-point life satisfaction scale. However, approximation quality varied substantially, ranging from excellent alignment (W = 0.16, Netherlands with LLaMA 3.1 8B using Original WVS) to poor alignment (W = 3.28, Netherlands with LLaMA 3.3 70B using REVERSE). These results suggest that LLMs can achieve reasonable approximations under favorable conditions, but performance is highly dependent on the specific combination of model, questionnaire, and target population.
+
+Contrary to expectations that larger models would yield better approximations, the smallest model (LLaMA 3.1 8B) substantially outperformed its larger counterparts (Table~\ref{tab:model-country-results}). LLaMA 3.1 8B achieved the lowest mean Wasserstein distance (W = 1.23) and KS statistic (KS = 0.39), followed by LLaMA 3.3 70B (W = 1.46, KS = 0.40) and Qwen 2.5 72B (W = 1.63, KS = 0.46). This pattern persisted across all four countries and most questionnaire types, suggesting a systematic advantage rather than an artifact of specific conditions.
+
+\begin{table}[htbp]
+\centering
+\caption{Country-level performance by model (averaged across questionnaires and countries)}
+\label{tab:model-country-results}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{Parameters} & \textbf{Mean W (SD)} & \textbf{Mean KS (SD)} \\
+\hline
+LLaMA 3.1 8B & 8B & 1.23 (0.48) & 0.39 (0.17) \\
+LLaMA 3.3 70B & 70B & 1.46 (0.88) & 0.40 (0.12) \\
+Qwen 2.5 72B & 72B & 1.63 (0.72) & 0.46 (0.11) \\
+\hline
+\end{tabular}
+\end{table}
+
+Approximation quality also varied substantially across questionnaire types (Table~\ref{tab:questionnaire-country-results}), directly addressing RQ2. The Original WVS questionnaire achieved the best average Wasserstein distance (W = 0.95), followed closely by SWLS (W = 1.03), both within the ``good'' approximation range. CANTRIL and OHQ showed moderate performance (W = 1.24 and W = 1.46 respectively), suggesting that metaphorical framing and multi-item complexity introduce additional approximation challenges. The REVERSE questionnaire performed markedly worse (W = 2.53), with Wasserstein distances 166\% higher than Original WVS, indicating that LLMs struggle to correctly process reversed scale orientations.
+
+\begin{table}[htbp]
+\centering
+\caption{Country-level performance by questionnaire type (averaged across models and countries)}
+\label{tab:questionnaire-country-results}
+\begin{tabular}{lccl}
+\hline
+\textbf{Questionnaire} & \textbf{Mean W (SD)} & \textbf{Mean KS (SD)} & \textbf{Assessment} \\
+\hline
+Original WVS & 0.95 (0.40) & 0.36 (0.16) & Good \\
+SWLS & 1.03 (0.18) & 0.34 (0.08) & Good \\
+Cantril & 1.24 (0.57) & 0.39 (0.14) & Moderate \\
+OHQ & 1.46 (0.19) & 0.45 (0.12) & Moderate \\
+Reverse & 2.53 (0.67) & 0.53 (0.06) & Poor \\
+\hline
+\end{tabular}
+\end{table}
+
+Geographic variation was also evident: the Netherlands showed the best overall approximation (W = 1.21), while Mexico showed the highest approximation difficulty (W = 1.60), representing a 32\% performance gap (Table~\ref{tab:geographic-results}). This pattern likely reflects differential representation in LLM training corpora, where Western countries may have more extensive representation.
+
+\begin{table}[htbp]
+\centering
+\caption{Country-level performance by country (averaged across models and questionnaires)}
+\label{tab:geographic-results}
+\begin{tabular}{lccc}
+\hline
+\textbf{Country} & \textbf{Mean W} & \textbf{Mean KS} & \textbf{Rank} \\
+\hline
+Netherlands & 1.21 & 0.38 & 1 (Best) \\
+USA & 1.41 & 0.40 & 2 \\
+Indonesia & 1.54 & 0.40 & 3 \\
+Mexico & 1.60 & 0.47 & 4 (Hardest) \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Distributional Comparisons}
+\label{subsec:distributional-comparisons}
+
+This section examines the actual life satisfaction distributions, comparing real WVS data with synthetic responses generated by each LLM-questionnaire combination. Figures~\ref{fig:distribution-usa}--\ref{fig:distribution-mex} display these distributions, with the black line representing real WVS data and colored lines showing synthetic distributions from each questionnaire type. Each panel corresponds to one LLM. These visualizations illustrate what the Wasserstein distance metric captures: the amount of probability mass that must be moved to transform one distribution into the other.
+
+\subsubsection*{United States}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_distribution_USA.png}
+    \caption{Life satisfaction distributions for the United States. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Original WVS and SWLS track the real distribution most closely, while REVERSE shows systematic deviation; LLaMA 3.1 8B achieves the tightest overall alignment.}
+    \label{fig:distribution-usa}
+\end{figure}
+
+The real US distribution (Figure~\ref{fig:distribution-usa}) exhibits a unimodal shape with a peak around satisfaction level 8. Original WVS and SWLS track this distribution most closely, while REVERSE shows systematic deviation, particularly for LLaMA 3.3 70B, where synthetic responses cluster at lower satisfaction levels. LLaMA 3.1 8B achieves the tightest alignment overall.
+
+\subsubsection*{Netherlands}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_distribution_NLD.png}
+    \caption{Life satisfaction distributions for the Netherlands. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. The Netherlands shows the best overall alignment, with LLaMA 3.1 8B achieving near-perfect approximation using Original WVS (W = 0.16); REVERSE again produces the largest deviations.}
+    \label{fig:distribution-nld}
+\end{figure}
+
+The Netherlands (Figure~\ref{fig:distribution-nld}) shows high concentration at satisfaction levels 7--8 with sharp drop-offs at both extremes. This represents the best-approximated country, with LLaMA 3.1 8B achieving near-perfect alignment using Original WVS (W = 0.16). The relatively homogeneous Dutch satisfaction distribution appears easier for LLMs to model, as even larger models achieve reasonable approximation. REVERSE again produces the largest deviations.
+
+\subsubsection*{Indonesia}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_distribution_IDN.png}
+    \caption{Life satisfaction distributions for Indonesia. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. LLaMA 3.1 8B with Original WVS best reproduces the peak location, while REVERSE shows nearly inverted patterns with peaks at levels 3--4 instead of 7--8.}
+    \label{fig:distribution-idn}
+\end{figure}
+
+Indonesia (Figure~\ref{fig:distribution-idn}) displays a pronounced right skew with a dominant peak at satisfaction level 8. Synthetic distributions generally capture this rightward tendency, with LLaMA 3.1 8B and Original WVS most accurately reproducing the peak location. OHQ produces more dispersed distributions, while REVERSE shows nearly inverted patterns, with some combinations showing peaks at levels 3--4 instead of 7--8.
+
+\subsubsection*{Mexico}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_distribution_MEX.png}
+    \caption{Life satisfaction distributions for Mexico. Black line shows real WVS data; colored lines show synthetic distributions from each questionnaire type. Each panel represents one LLM. Mexico presents the highest approximation difficulty, with synthetic distributions consistently underestimating concentration at the highest satisfaction levels (9--10).}
+    \label{fig:distribution-mex}
+\end{figure}
+
+Mexico (Figure~\ref{fig:distribution-mex}) presents the most challenging case. The real distribution shows strong right skew with concentration at levels 8--10, reflecting characteristically high self-reported satisfaction. Synthetic distributions consistently underestimate concentration at the highest levels (9--10), suggesting LLMs struggle to model populations with extreme response tendencies. REVERSE performs particularly poorly, with Qwen 2.5 72B producing an almost uniform distribution.
+
+\subsubsection*{Summary of Distributional Patterns}
+
+Figure~\ref{fig:wasserstein-by-country} summarizes the quantitative differences observed in the distributional comparisons, presenting Wasserstein distances for all model-questionnaire combinations. The bar chart confirms the patterns observed in the distribution plots: REVERSE consistently shows the highest distances across all conditions, Original WVS and SWLS typically achieve the lowest distances, and LLaMA 3.1 8B (leftmost group in each panel) generally outperforms larger models. Corresponding KS statistics are presented in Appendix~\ref{app:ks-results}.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_wasserstein_by_country.png}
+    \caption{Wasserstein distance by model and questionnaire across countries. Each panel represents one country, with models grouped on the x-axis and questionnaire types distinguished by color. Lower bars indicate better approximation. The REVERSE questionnaire (orange) consistently shows the highest Wasserstein distances, while Original WVS (green) and SWLS (purple) typically achieve the best performance.}
+    \label{fig:wasserstein-by-country}
+\end{figure}
+
+To further examine the structure of distributional similarity, UMAP (Uniform Manifold Approximation and Projection) dimensionality reduction was applied to the life satisfaction distributions. Each data point in Figure~\ref{fig:umap-combined} represents a country-questionnaire combination, with the input being a 10-dimensional vector of weighted relative frequencies for satisfaction scores 1--10. Points that are close together in the UMAP space have similar distributional shapes. Colors indicate questionnaire type (black = real WVS, green = Original WVS, orange = REVERSE, blue = CANTRIL, purple = SWLS, red = OHQ), while marker shapes indicate country (circle = USA, square = Indonesia, triangle = Netherlands, diamond = Mexico).
+
+\begin{figure}[htbp]
+    \centering
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig_umap_llama31_8b.png}
+        \centerline{(a) LLaMA 3.1 8B}
+    \end{minipage}
+    \hfill
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig_umap_llama33_70b.png}
+        \centerline{(b) LLaMA 3.3 70B}
+    \end{minipage}
+
+    \vspace{0.5cm}
+
+    \begin{minipage}{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/fig_umap_qwen25_72b.png}
+        \centerline{(c) Qwen 2.5 72B}
+    \end{minipage}
+    \caption{UMAP projections of aggregated life satisfaction distributions by country and LLM. Points cluster primarily by questionnaire type (color) rather than country (shape), indicating that measurement instrument choice has a stronger influence on distributional similarity than geographic context.}
+    \label{fig:umap-combined}
+\end{figure}
+
+The projections show that distributions cluster primarily by questionnaire type rather than by country. Points of the same color tend to group together regardless of their shape, while points of the same shape are dispersed across different regions of the embedding space. This strong clustering by questionnaire type may seem to contradict the variance decomposition findings in Section~\ref{sec:subgroup-results}, where questionnaire type explains only 6.9\% of variance in approximation quality---less than health status (11.0\%) or model choice (8.0\%). However, these analyses measure different phenomena: the UMAP clustering indicates that different questionnaires produce distinctly different response distributions, while variance decomposition measures how well those distributions align with real data. In other words, all questionnaires produce different results from each other, but this distinctness does not necessarily translate to better or worse approximation of human responses.
+
+The REVERSE questionnaire (orange) forms a distinct cluster separated from other questionnaires across all three models, consistent with its systematically poorer distributional alignment observed in the Wasserstein analysis. The real WVS data points (black) cluster near the Original WVS and SWLS synthetic distributions, suggesting that these questionnaires produce response patterns most similar to actual human responses. The four country markers for each questionnaire type remain relatively close together, indicating that within-questionnaire variation across countries is smaller than between-questionnaire variation within countries.
+
+%-----------------------------------------------------------
+\section{Subgroup Analysis}
+\label{sec:subgroup-results}
+
+The subgroup analysis extends the country-level findings by examining approximation quality across 36 demographic segments (4 countries $\times$ 3 income levels $\times$ 3 health statuses), yielding 540 unique comparisons (36 segments $\times$ 5 questionnaires $\times$ 3 models). This granular analysis identifies which demographic factors most strongly influence approximation quality and reveals systematic patterns that aggregate analyses may obscure.
+
+Figure~\ref{fig:specification-curve} provides an overview of all 540 segment-level comparisons, displaying Wasserstein distances sorted from highest (worst approximation) to lowest (best approximation). The specification curve reveals substantial variation in approximation quality across configurations, with Wasserstein distances ranging from 0.35 to 7.60 (mean = 2.09). The bottom panel indicates which factor levels correspond to each specification, enabling visual identification of systematic patterns. Notably, Reverse Scale questionnaire configurations (orange) cluster predominantly among the worst-performing specifications, while Netherlands and LLaMA 3.1 8B dominate the best-performing region.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig5_specification_curve.pdf}
+    \caption{Specification curve showing approximation quality across all 540 segment-level comparisons. Top panel: Wasserstein distances sorted from highest (worst) to lowest (best), with points colored by questionnaire type. Bottom panel: Indicator markers showing which factor levels (questionnaire, model, country, health status, income level) correspond to each specification. The dashed line indicates the overall mean (W = 2.09). Reverse Scale configurations (orange) cluster predominantly among the worst-performing specifications, while Netherlands and LLaMA 3.1 8B dominate the best-performing region.}
+    \label{fig:specification-curve}
+\end{figure}
+
+\subsection{Variance Decomposition}
+\label{subsec:variance-decomposition-results}
+
+To quantify the relative importance of each factor in explaining variation in approximation quality, variance decomposition analysis was conducted across all 540 segment-level Wasserstein distances. Table~\ref{tab:variance-decomposition} presents the results.
+
+\begin{table}[htbp]
+\centering
+\caption{Variance decomposition results: relative importance of factors in explaining Wasserstein distance variation}
+\label{tab:variance-decomposition}
+\begin{tabular}{lccc}
+\hline
+\textbf{Factor} & \textbf{Variance Explained (\%)} & \textbf{F} & \textbf{p} \\
+\hline
+Health Status & 11.0 & 33.27 & $<$.001 \\
+Model & 8.0 & 23.27 & $<$.001 \\
+Country & 7.0 & 13.48 & $<$.001 \\
+Questionnaire Type & 6.9 & 9.86 & $<$.001 \\
+Income Level & 0.7 & 1.78 & .170 \\
+\hline
+\end{tabular}
+\end{table}
+
+Health status emerged as the most important factor, explaining 11.0\% of variance in Wasserstein distances (F = 33.27, p $<$ .001). This finding has important implications for using synthetic data in health-related research, as discussed in Section~\ref{subsec:demographic-effects}.
+
+Model choice explained 8.0\% of variance (F = 23.27, p $<$ .001), confirming that model selection meaningfully affects approximation quality. Country explained 7.0\% of variance (F = 13.48, p $<$ .001), while questionnaire type explained 6.9\% (F = 9.86, p $<$ .001).
+
+Notably, income level showed minimal influence (0.7\% variance explained) and was not statistically significant (F = 1.78, p = .170). This null finding is substantively important: it suggests that LLMs approximate income-related differences in life satisfaction more uniformly than health-related differences, implying greater reliability for income-based comparisons in synthetic data.
+
+Figure~\ref{fig:variance-decomposition} visualizes these results.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/fig2_variance_decomposition_forest.pdf}
+    \caption{Variance decomposition results showing relative importance of each factor in explaining Wasserstein distance variation. Health status emerges as the dominant factor, while income level shows negligible importance and is not statistically significant.}
+    \label{fig:variance-decomposition}
+\end{figure}
+
+\subsection{Demographic Effects}
+\label{subsec:demographic-effects}
+
+Given the strong influence of health status in the variance decomposition, detailed examination of demographic patterns is warranted. Table~\ref{tab:health-effects} presents Wasserstein distances by health status level.
+
+\begin{table}[htbp]
+\centering
+\caption{Approximation quality by health status}
+\label{tab:health-effects}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Health Status} & \textbf{Mean W} & \textbf{SD} & \textbf{Median} & \textbf{Range} \\
+\hline
+Good & 1.93 & 1.47 & 1.47 & 0.35--7.60 \\
+Fair & 1.71 & 0.61 & 1.67 & 0.38--4.00 \\
+Poor & 2.63 & 1.12 & 2.51 & 0.40--6.71 \\
+\hline
+\end{tabular}
+\end{table}
+
+Poor health populations showed substantially worse approximation (M = 2.63, SD = 1.12) compared to fair health (M = 1.71, SD = 0.61) and good health (M = 1.93, SD = 1.47) populations. The Wasserstein distance for poor health was 54\% higher than for fair health. Interestingly, fair health showed better approximation than good health, possibly because fair health represents a more ``average'' response pattern that LLMs can model more effectively.
+
+In contrast, income level showed no meaningful effect on approximation quality (Table~\ref{tab:income-effects}). Mean Wasserstein distances ranged only from 1.97 (medium income) to 2.20 (low income), spanning just 0.23 units compared to 0.92 units for health status. This negligible variation confirms that LLMs represent income-satisfaction relationships more uniformly than health-satisfaction relationships.
+
+\begin{table}[htbp]
+\centering
+\caption{Approximation quality by income level}
+\label{tab:income-effects}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Income Level} & \textbf{Mean W} & \textbf{SD} & \textbf{Median} & \textbf{Range} \\
+\hline
+Low & 2.20 & 0.85 & 2.10 & 0.56--4.53 \\
+Medium & 1.97 & 1.07 & 1.68 & 0.44--6.35 \\
+High & 2.10 & 1.53 & 1.56 & 0.35--7.60 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Model and Questionnaire Effects}
+\label{subsec:model-questionnaire-effects}
+
+The segment-level analysis confirms the country-level finding that smaller models outperform larger models (Table~\ref{tab:model-segment}). LLaMA 3.1 8B achieved the lowest mean Wasserstein distance (M = 1.63, SD = 0.73) and won in 83.3\% of segment-questionnaire combinations, producing the best approximation for 150 of 180 unique combinations. LLaMA 3.3 70B showed substantially worse performance (M = 2.24, SD = 1.32, 13.3\% win rate), while Qwen 2.5 72B performed worst (M = 2.41, SD = 1.27, 7.2\% win rate).
+
+\begin{table}[htbp]
+\centering
+\caption{Model performance across 540 segment-level comparisons}
+\label{tab:model-segment}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Model} & \textbf{Mean W} & \textbf{SD} & \textbf{Win Rate} & \textbf{Best Segment Count} \\
+\hline
+LLaMA 3.1 8B & 1.63 & 0.73 & 83.3\% & 150/180 \\
+LLaMA 3.3 70B & 2.24 & 1.32 & 13.3\% & 24/180 \\
+Qwen 2.5 72B & 2.41 & 1.27 & 7.2\% & 13/180 \\
+\hline
+\end{tabular}
+\end{table}
+
+Questionnaire patterns also held at the segment level (Table~\ref{tab:questionnaire-segment}). SWLS achieved the best mean Wasserstein distance (M = 1.78, SD = 0.71), followed by OHQ (M = 1.80, SD = 0.54). The multi-item scales showed lower variance than single-item scales, suggesting more consistent performance across demographic contexts. REVERSE again showed the worst performance (M = 2.63, SD = 1.69), with mean Wasserstein distance 48\% higher than SWLS, confirming that reversed scale processing represents a fundamental limitation for current LLMs.
+
+\begin{table}[htbp]
+\centering
+\caption{Questionnaire performance across 540 segment-level comparisons}
+\label{tab:questionnaire-segment}
+\begin{tabular}{lcccc}
+\hline
+\textbf{Questionnaire} & \textbf{Mean W} & \textbf{SD} & \textbf{Median} & \textbf{Range} \\
+\hline
+SWLS & 1.78 & 0.71 & 1.63 & 0.60--4.71 \\
+OHQ & 1.80 & 0.54 & 1.73 & 0.40--3.71 \\
+Original WVS & 2.08 & 1.19 & 1.72 & 0.51--5.71 \\
+CANTRIL & 2.16 & 1.24 & 1.82 & 0.35--6.71 \\
+REVERSE & 2.63 & 1.69 & 2.02 & 0.60--7.60 \\
+\hline
+\end{tabular}
+\end{table}
+
+\subsection{Score-Level Accuracy}
+\label{subsec:score-level-results}
+
+The preceding subgroup analyses examined approximation quality across demographic segments using aggregate distributional metrics. This section investigates which specific life satisfaction scores (1--10) are predicted more accurately, revealing systematic patterns in LLM response generation. For each score $s \in \{1, \ldots, 10\}$, the absolute error is computed as the difference between real and synthetic proportions: $|p_s^{real} - p_s^{synth}|$. Aggregating across all 60 model-questionnaire-country combinations yields 600 score-level comparisons.
+
+Table~\ref{tab:score-level-overall} presents prediction accuracy for each satisfaction level.
+
+\begin{table}[htbp]
+\centering
+\caption{Score-level prediction accuracy (averaged across all conditions)}
+\label{tab:score-level-overall}
+\begin{tabular}{cccccc}
+\hline
+\textbf{Score} & \textbf{Real Prop.} & \textbf{Synth. Prop.} & \textbf{Mean Abs. Error} & \textbf{SD} & \textbf{Rank} \\
+\hline
+1 & 0.015 & 0.007 & 0.020 & 0.023 & 1 (Best) \\
+2 & 0.011 & 0.045 & 0.046 & 0.044 & 3 \\
+3 & 0.020 & 0.036 & 0.044 & 0.057 & 2 \\
+4 & 0.031 & 0.065 & 0.065 & 0.060 & 4 \\
+5 & 0.075 & 0.106 & 0.094 & 0.085 & 5 \\
+6 & 0.082 & 0.163 & 0.108 & 0.074 & 6 \\
+7 & 0.174 & 0.153 & 0.117 & 0.071 & 7 \\
+8 & 0.252 & 0.252 & 0.121 & 0.101 & 8 \\
+9 & 0.135 & 0.156 & 0.148 & 0.088 & 9 \\
+10 & 0.205 & 0.016 & 0.194 & 0.139 & 10 (Worst) \\
+\hline
+\end{tabular}
+\end{table}
+
+The results reveal that prediction accuracy varies substantially across scores. Low satisfaction scores (1--3) achieved the best accuracy (M = 0.021--0.044), while high scores (9--10) showed the worst accuracy (M = 0.199--0.238). One-way ANOVA confirmed significant variation across scores ($F(9, 590) = 34.09$, $p < .001$).
+
+The most striking finding is the dramatic under-prediction of score 10: real data shows 20.5\% of responses at maximum satisfaction, but synthetic data produces only 2.2\%---an 89\% under-representation. This pattern indicates a systematic central tendency bias, where LLMs avoid generating extreme responses.
+
+\subsubsection{Prediction Bias Direction}
+
+Figure~\ref{fig:score-level-direction} displays the direction and magnitude of prediction bias for each score.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=0.9\textwidth]{figures/fig_score_level_direction.pdf}
+    \caption{LLM prediction bias by life satisfaction score. Positive values (red) indicate over-prediction; negative values (green) indicate under-prediction. Error bars show standard deviation.}
+    \label{fig:score-level-direction}
+\end{figure}
+
+LLMs systematically over-predict moderate scores (2--6, 8--9) while under-predicting extreme scores. Score 6 is over-predicted by 3.4 percentage points (real: 8.2\%, synthetic: 11.6\%), while score 10 is under-predicted by 18.3 percentage points. Score 8 shows moderate over-prediction (real: 25.1\%, synthetic: 29.2\%).
+
+This pattern is consistent with a central tendency bias in LLM response generation: rather than producing the full range of human responses, LLMs concentrate probability mass toward the middle of the scale. Such bias may reflect training data characteristics, where extreme statements of complete satisfaction or dissatisfaction are less common in natural language corpora than moderate expressions.
+
+\subsubsection{Variation by Questionnaire Type}
+
+Appendix Table~\ref{tab:app-score-level-by-questionnaire} presents prediction accuracy broken down by questionnaire type. Multi-item scales (SWLS, OHQ) show better accuracy for low scores (1--4), likely because equipercentile equating distributes responses more evenly. Original WVS performs best for moderate scores (5--7). Critically, score 10 remains poorly predicted across all questionnaires (errors 0.162--0.205), indicating that maximum satisfaction is fundamentally difficult for LLMs to generate at human-like frequencies regardless of measurement instrument.
+
+Figure~\ref{fig:score-level-real-vs-synth} provides a visual comparison of real and synthetic distributions across models.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/fig_score_level_real_vs_synth.pdf}
+    \caption{Comparison of real WVS and synthetic score distributions by model. All models show similar biases: under-prediction of score 10 and over-prediction of scores 4--6.}
+    \label{fig:score-level-real-vs-synth}
+\end{figure}
+
+All three models exhibit similar score-level biases, with the rightward skew characteristic of real life satisfaction data (concentration at scores 7--10) not fully captured by synthetic responses. LLaMA 3.1 8B shows slightly tighter alignment, consistent with its superior performance on aggregate metrics.
+
+Overall, the score-level analysis reveals that LLM approximation accuracy decreases monotonically from low to high satisfaction levels. The dramatic under-prediction of score 10 (89\% under-representation) represents the single largest source of distributional mismatch. This central tendency bias has practical implications: synthetic data will systematically underestimate the proportion of highly satisfied individuals, and research focusing on extreme satisfaction levels should treat synthetic data with particular caution.
+
+%-----------------------------------------------------------
+\section{Ensemble Approaches}
+\label{sec:ensemble-results}
+
+The ensemble analysis addresses RQ3 by testing whether combining results from multiple questionnaires improves alignment with real survey responses beyond what any single questionnaire achieves.
+
+\subsection{Ensemble Construction}
+\label{subsec:ensemble-construction}
+
+Two ensemble strategies were evaluated. The KS-based optimal weighting approach assigned weights based on inverse KS statistics, giving higher weight to better-performing questionnaires; for each model, weights were calculated as $w_q = (1 - \overline{KS}_q) / \sum_{q'} (1 - \overline{KS}_{q'})$, where $\overline{KS}_q$ is the average KS statistic for questionnaire $q$ across countries. The equal-weight averaging approach assigned all four questionnaires equal weight (25\% each), treating all measurement approaches as equally valid. Both ensembles excluded the REVERSE questionnaire due to its consistently poor performance, combining only Original WVS, CANTRIL, SWLS, and OHQ.
+
+\subsection{Ensemble Performance}
+\label{subsec:ensemble-performance}
+
+Table~\ref{tab:ensemble-results} compares ensemble performance against individual questionnaires.
+
+\begin{table}[htbp]
+\centering
+\caption{Ensemble performance compared to individual questionnaires (averaged across models and countries)}
+\label{tab:ensemble-results}
+\begin{tabular}{lcc}
+\hline
+\textbf{Approach} & \textbf{Mean W} & \textbf{Mean KS} \\
+\hline
+\multicolumn{3}{l}{\textit{Individual Questionnaires}} \\
+Original WVS & 0.95 & 0.36 \\
+SWLS & 1.03 & 0.34 \\
+CANTRIL & 1.24 & 0.39 \\
+OHQ & 1.46 & 0.45 \\
+REVERSE & 2.53 & 0.53 \\
+\hline
+\multicolumn{3}{l}{\textit{Ensemble Approaches}} \\
+KS-Based Ensemble & 0.70 & 0.25 \\
+Equal-Weight Average & 0.71 & 0.25 \\
+\hline
+\end{tabular}
+\end{table}
+
+Both ensemble approaches substantially outperformed all individual questionnaires. The KS-based ensemble achieved mean Wasserstein distance of 0.70, representing a 26\% improvement over the best individual questionnaire (Original WVS, W = 0.95) and a 72\% improvement over the worst included questionnaire (OHQ, W = 1.46). The equal-weight average achieved nearly identical performance (W = 0.71), suggesting that all four questionnaires contribute relatively equally to ensemble performance.
+
+KS statistics showed similar patterns: both ensembles achieved mean KS = 0.25, compared to 0.34 for the best individual questionnaire (SWLS), representing a 26\% improvement.
+
+Figure~\ref{fig:wasserstein-ensemble} displays Wasserstein distances for all approaches across countries and models. The ensemble (light gray) and average (dark gray) approaches consistently achieve lower Wasserstein distances than individual questionnaires across nearly all model-country combinations, with particularly notable improvements for the larger models (LLaMA 3.3 70B and Qwen 2.5 72B).
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/wasserstein_all_approaches.png}
+    \caption{Wasserstein distance comparison across all approaches. Each panel shows one country, with models on the x-axis and questionnaire types distinguished by color. Ensemble (light gray) and Average (dark gray) approaches consistently achieve lower Wasserstein distances than individual questionnaires, demonstrating the benefit of combining multiple measurement instruments.}
+    \label{fig:wasserstein-ensemble}
+\end{figure}
+
+Table~\ref{tab:ensemble-by-model} presents ensemble performance by model.
+
+\begin{table}[htbp]
+\centering
+\caption{Ensemble performance by model (Wasserstein distance)}
+\label{tab:ensemble-by-model}
+\begin{tabular}{lccc}
+\hline
+\textbf{Model} & \textbf{KS Ensemble} & \textbf{Equal-Weight} & \textbf{Best Individual} \\
+\hline
+LLaMA 3.1 8B & 0.78 & 0.79 & 0.89 (Original WVS) \\
+LLaMA 3.3 70B & 0.71 & 0.72 & 0.85 (Original WVS) \\
+Qwen 2.5 72B & 0.61 & 0.63 & 0.90 (Original WVS) \\
+\hline
+\end{tabular}
+\end{table}
+
+All three models showed improvement with ensemble approaches, with Qwen 2.5 72B showing the largest gain (32\% improvement from 0.90 to 0.61). This suggests that ensemble methods may be particularly beneficial for models with weaker individual questionnaire performance, as they can leverage complementary strengths across measurement instruments.
+
+Table~\ref{tab:ensemble-by-country} presents ensemble performance by country.
+
+\begin{table}[htbp]
+\centering
+\caption{Ensemble performance by country (Wasserstein distance, averaged across models)}
+\label{tab:ensemble-by-country}
+\begin{tabular}{lccc}
+\hline
+\textbf{Country} & \textbf{KS Ensemble} & \textbf{Equal-Weight} & \textbf{Best Individual} \\
+\hline
+Netherlands & 0.44 & 0.45 & 0.48 (Original WVS) \\
+USA & 0.65 & 0.66 & 0.88 (Original WVS) \\
+Indonesia & 0.86 & 0.87 & 1.08 (Original WVS) \\
+Mexico & 0.86 & 0.87 & 0.88 (SWLS) \\
+\hline
+\end{tabular}
+\end{table}
+
+The ensemble showed improvements across all countries, with the largest gains in the USA (26\% improvement) and Indonesia (20\% improvement). The Netherlands, which already showed good individual questionnaire performance, showed more modest improvement (8\%), while Mexico showed minimal additional benefit from the ensemble approach.
+
+Figures~\ref{fig:scatter-ensemble-usa}--\ref{fig:scatter-ensemble-mex} display the life satisfaction distributions for each country, comparing individual questionnaires with ensemble approaches. The ensemble and average distributions (gray lines) consistently track closer to the real WVS distribution (black line) than most individual questionnaires, particularly avoiding the extreme peaks exhibited by some individual approaches.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/scatter_all_approaches_USA.png}
+    \caption{Life satisfaction distributions for the United States comparing all approaches. Black line shows real WVS data; colored lines show individual questionnaires; gray lines show ensemble (light) and average (dark) approaches. Each panel represents one LLM.}
+    \label{fig:scatter-ensemble-usa}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/scatter_all_approaches_NLD.png}
+    \caption{Life satisfaction distributions for the Netherlands comparing all approaches. The Netherlands shows the best overall alignment, with ensemble approaches achieving near-perfect approximation.}
+    \label{fig:scatter-ensemble-nld}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/scatter_all_approaches_IDN.png}
+    \caption{Life satisfaction distributions for Indonesia comparing all approaches. The ensemble approaches better capture the right-skewed distribution characteristic of Indonesian responses.}
+    \label{fig:scatter-ensemble-idn}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{figures/scatter_all_approaches_MEX.png}
+    \caption{Life satisfaction distributions for Mexico comparing all approaches. Mexico shows the highest variation across approaches, with ensemble methods providing moderate improvement.}
+    \label{fig:scatter-ensemble-mex}
+\end{figure}
+
+\subsection{Practical Implications for RQ3}
+\label{subsec:rq3-implications}
+
+These results provide a clear affirmative answer to RQ3: combining results across multiple scales does improve alignment with human survey responses. The ensemble approach achieved approximately 26\% better Wasserstein distance and 26\% better KS statistic compared to the best individual questionnaire.
+
+The near-identical performance of KS-based weighting (W = 0.70) and equal-weight averaging (W = 0.71) has practical implications. Given that the performance difference is minimal (1.4\%), the equal-weight approach is recommended for most applications due to its simplicity, transparency, and robustness. The small performance gap suggests that all four questionnaires (Original WVS, CANTRIL, SWLS, OHQ) contribute roughly equally to ensemble performance when REVERSE is excluded.
+
+%-----------------------------------------------------------
+\section{Summary of Findings}
+\label{sec:results-summary}
+
+This chapter presented findings from three complementary analytical approaches examining whether LLMs can approximate human life satisfaction survey responses. Table~\ref{tab:findings-summary} summarizes the key findings organized by research question.
+
+\begin{table}[htbp]
+\centering
+\caption{Summary of key findings by research question}
+\label{tab:findings-summary}
+\begin{tabular}{p{3.5cm}p{9cm}}
+\hline
+\textbf{Research Question} & \textbf{Key Findings} \\
+\hline
+\textbf{RQ1}: Can LLMs approximate human responses? &
+Partially. Mean Wasserstein distance (W = 1.44) indicates moderate approximation quality, though performance varies substantially across conditions (range: 0.16--3.28). LLaMA 3.1 8B outperforms larger models (83.3\% win rate). Poor health populations are systematically harder to approximate (54\% higher W than fair health). \\
+\hline
+\textbf{RQ2}: Are certain scales better approximated? &
+Yes. SWLS and Original WVS show best performance (W $\approx$ 1.0). REVERSE performs substantially worse (W = 2.53, 166\% higher than Original WVS). Questionnaire type explains 6.9\% of variance in approximation quality. \\
+\hline
+\textbf{RQ3}: Can ensembles improve alignment? &
+Yes. Both KS-based and equal-weight ensembles achieve W $\approx$ 0.70, representing 26\% improvement over best individual questionnaire. Equal-weight averaging is recommended for simplicity. \\
+\hline
+\end{tabular}
+\end{table}
+
+The variance decomposition analysis revealed that health status (11.0\%), model choice (8.0\%), country (7.0\%), and questionnaire type (6.9\%) are the significant factors influencing approximation quality, while income level has negligible impact (0.7\%). This finding has important implications for using synthetic survey data: health-related research requires additional validation, while income-based analyses may be more reliable.
+
+The score-level analysis revealed a systematic central tendency bias: LLMs dramatically under-predict maximum satisfaction (score 10 is under-represented by 89\%) while over-predicting moderate scores (2--6, 8--9). This pattern persists across all models and questionnaires, representing the single largest source of distributional mismatch and indicating that research focusing on extreme satisfaction levels should treat synthetic data with particular caution.
+
+The counterintuitive finding that smaller models outperform larger models challenges prevailing assumptions and has practical implications for cost-effective synthetic data generation. The consistent success of ensemble approaches across models and countries suggests a robust strategy for improving synthetic data quality when multiple measurement instruments are feasible.
+
+%-----------------------------------------------------------
+% End of Chapter 5
